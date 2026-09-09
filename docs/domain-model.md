@@ -12,3 +12,17 @@ Creator OS domain decision. Do not assume it models a creator organization,
 agency, staff workspace, brand, collaborator relationship, or final tenancy
 boundary. Define that meaning in an approved domain design before building on
 it.
+
+`User` is the authentication identity. `Creator` is an independent identity
+and ownership aggregate: a creator has exactly one authoritative `User` owner,
+and a user currently owns at most one creator. This is enforced by the unique
+`creators.user_id` constraint. `Team` remains a separate temporary
+workspace/collaboration primitive; Creator ownership is not Team ownership and
+does not use `team_id` or `current_team_id`.
+
+The initial Creator identity contains a canonical lowercase handle, a display
+name, and an optional bio. Canonicalization is applied by the Creator model for
+all Eloquent writes, while PostgreSQL enforces lowercase storage and unique
+`lower(handle)` values. Status, public discovery, collaborators, brands, and
+monetization are deliberately outside this phase. Future creator lifecycle
+events and audit records attach at Creator creation and update boundaries.
