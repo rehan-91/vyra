@@ -95,7 +95,7 @@ export default function TeamEdit({
             <h1 className="sr-only">{pageTitle}</h1>
 
             <div className="flex flex-col space-y-10">
-                <div className="space-y-6">
+                <div className="border-border bg-card/75 space-y-6 rounded-2xl border p-5 shadow-[0_16px_46px_-36px_rgb(0_0_0)] sm:p-6">
                     {permissions.canUpdateTeam ? (
                         <>
                             <Heading
@@ -144,7 +144,7 @@ export default function TeamEdit({
                     )}
                 </div>
 
-                <div className="space-y-6">
+                <div className="border-border bg-card/75 space-y-6 rounded-2xl border p-5 shadow-[0_16px_46px_-36px_rgb(0_0_0)] sm:p-6">
                     <div className="flex items-center justify-between">
                         <Heading
                             variant="small"
@@ -171,7 +171,7 @@ export default function TeamEdit({
                             <div
                                 key={member.id}
                                 data-test="member-row"
-                                className="flex items-center justify-between rounded-lg border p-4"
+                                className="border-border flex items-center justify-between rounded-xl border bg-[#080b11]/70 p-4"
                             >
                                 <div className="flex items-center gap-4">
                                     <Avatar className="h-10 w-10">
@@ -263,7 +263,7 @@ export default function TeamEdit({
                 </div>
 
                 {invitations.length > 0 ? (
-                    <div className="space-y-6">
+                    <div className="border-border bg-card/75 space-y-6 rounded-2xl border p-5 shadow-[0_16px_46px_-36px_rgb(0_0_0)] sm:p-6">
                         <Heading
                             variant="small"
                             title="Pending invitations"
@@ -275,7 +275,7 @@ export default function TeamEdit({
                                 <div
                                     key={invitation.code}
                                     data-test="invitation-row"
-                                    className="flex items-center justify-between rounded-lg border p-4"
+                                    className="border-border flex items-center justify-between rounded-xl border bg-[#080b11]/70 p-4"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full">
@@ -321,14 +321,14 @@ export default function TeamEdit({
                 ) : null}
 
                 {permissions.canDeleteTeam && !team.isPersonal ? (
-                    <div className="space-y-6">
+                    <div className="border-destructive/40 bg-destructive/8 space-y-6 rounded-2xl border p-5 sm:p-6">
                         <Heading
                             variant="small"
                             title="Delete team"
                             description="Permanently delete your team"
                         />
-                        <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                            <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
+                        <div className="border-destructive/35 space-y-4 rounded-xl border bg-[#170d0d] p-4">
+                            <div className="text-destructive-foreground relative space-y-0.5">
                                 <p className="font-medium">Warning</p>
                                 <p className="text-sm">
                                     Please proceed with caution, this cannot be

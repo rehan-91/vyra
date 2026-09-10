@@ -58,7 +58,7 @@ export default function TeamsIndex({ teams }: Props) {
                             <div
                                 key={team.id}
                                 data-test="team-row"
-                                className="flex items-center justify-between gap-4 rounded-lg border p-4"
+                                className="border-border bg-card/75 hover:border-primary/35 flex items-center justify-between gap-4 rounded-2xl border p-4 shadow-[0_16px_46px_-36px_rgb(0_0_0)] transition-colors"
                             >
                                 <div className="flex items-center gap-4">
                                     <div>
@@ -154,7 +154,7 @@ export default function TeamsIndex({ teams }: Props) {
                     })}
 
                     {teams.length === 0 ? (
-                        <p className="text-muted-foreground py-8 text-center">
+                        <p className="border-border text-muted-foreground rounded-2xl border border-dashed py-10 text-center">
                             You don't belong to any teams yet.
                         </p>
                     ) : null}

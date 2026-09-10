@@ -5,5 +5,5 @@ they grow beyond a single page or reusable primitive. A feature may contain its
 own components, hooks, types, and presentation helpers.
 
 Keep shared primitives in `components`, cross-cutting hooks in `hooks`, route
-pages in `pages`, and application shells in `layouts`. Do not migrate the
-starter-kit authentication UI without a concrete product need.
+pages in `pages`, and application shells in `layouts`. Preserve authentication
+behavior when evolving its presentation.
