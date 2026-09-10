@@ -5,10 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
-import { defineConfig, lazyPlugins } from 'vite-plus';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-    plugins: lazyPlugins(() => [
+    plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
@@ -27,7 +27,7 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
-    ]),
+    ],
     server: {
         watch: {
             ignored: [
