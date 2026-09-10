@@ -125,7 +125,7 @@ export default function CreatorOsZenithHomepage() {
 
             if (window.scrollY > 20) {
                 header.classList.add(
-                    'bg-[#030406]/85',
+                    'bg-background/85',
                     'backdrop-blur-md',
                     'border-b',
                     'border-white/10',
@@ -134,7 +134,7 @@ export default function CreatorOsZenithHomepage() {
                 header.classList.remove('py-6');
             } else {
                 header.classList.remove(
-                    'bg-[#030406]/85',
+                    'bg-background/85',
                     'backdrop-blur-md',
                     'border-b',
                     'border-white/10',
@@ -172,7 +172,7 @@ export default function CreatorOsZenithHomepage() {
                 body {
                     font-family: 'Inter', sans-serif;
                     cursor: default;
-                    background-color: #030406;
+                    background-color: #050306;
                     color: #f1f5f9;
                 }
 
@@ -182,27 +182,27 @@ export default function CreatorOsZenithHomepage() {
                 }
 
                 ::-webkit-scrollbar { width: 6px; }
-                ::-webkit-scrollbar-track { background: #030406; }
+                ::-webkit-scrollbar-track { background: #050306; }
                 ::-webkit-scrollbar-thumb { background: #1e222b; border-radius: 3px; }
-                ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+                ::-webkit-scrollbar-thumb:hover { background: #f23fa5; }
 
                 .cursor-dot {
                     width: 6px;
                     height: 6px;
-                    background-color: #d4af37;
+                    background-color: #f23fa5;
                     border-radius: 50%;
                     position: fixed;
                     pointer-events: none;
                     z-index: 9999;
                     transition: transform 0.1s ease, opacity 0.2s ease;
                     transform: translate(-50%, -50%);
-                    box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+                    box-shadow: 0 0 10px rgb(242 63 165 / 0.6);
                 }
 
                 .cursor-ring {
                     width: 34px;
                     height: 34px;
-                    border: 1.5px solid rgba(212, 175, 55, 0.35);
+                    border: 1.5px solid rgb(242 63 165 / 0.35);
                     border-radius: 50%;
                     position: fixed;
                     pointer-events: none;
@@ -218,8 +218,8 @@ export default function CreatorOsZenithHomepage() {
                 .zenith-hovering .cursor-ring {
                     width: 52px;
                     height: 52px;
-                    border-color: rgba(212, 175, 55, 0.8);
-                    background-color: rgba(212, 175, 55, 0.04);
+                    border-color: rgb(242 63 165 / 0.8);
+                    background-color: rgb(242 63 165 / 0.04);
                 }
 
                 .zenith-hovering .cursor-dot {
@@ -235,18 +235,18 @@ export default function CreatorOsZenithHomepage() {
                     animation: floatZenith 7s ease-in-out infinite;
                 }
 
-                @keyframes pulseGold {
+                @keyframes pulseSignal {
                     0%, 100% { opacity: 0.2; transform: scale(1); }
                     50% { opacity: 0.45; transform: scale(1.05); }
                 }
 
-                .animate-pulse-gold {
-                    animation: pulseGold 6s ease-in-out infinite;
+                .animate-pulse-signal {
+                    animation: pulseSignal 6s ease-in-out infinite;
                 }
 
                 @media (prefers-reduced-motion: reduce) {
                     .animate-float-zenith,
-                    .animate-pulse-gold {
+                    .animate-pulse-signal {
                         animation: none !important;
                     }
 
@@ -257,7 +257,7 @@ export default function CreatorOsZenithHomepage() {
             `}</style>
 
             <div
-                className={`relative min-h-screen overflow-x-hidden bg-[#030406] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200 ${
+                className={`bg-background selection:bg-zenith-primary/30 selection:text-zenith-primary-hover relative min-h-screen overflow-x-hidden text-slate-100 ${
                     hovering ? 'zenith-hovering' : ''
                 }`}
             >
@@ -270,15 +270,15 @@ export default function CreatorOsZenithHomepage() {
                     className="cursor-ring hidden md:block"
                 />
 
-                <div className="animate-pulse-gold pointer-events-none absolute top-0 left-1/3 h-[600px] w-[600px] rounded-full bg-amber-600/10 blur-[180px]" />
+                <div className="animate-pulse-signal bg-zenith-primary/10 pointer-events-none absolute top-0 left-1/3 h-[600px] w-[600px] rounded-full blur-[180px]" />
                 <div
-                    className="animate-pulse-gold pointer-events-none absolute top-[35%] right-1/4 h-[550px] w-[550px] rounded-full bg-yellow-700/8 blur-[180px]"
+                    className="animate-pulse-signal bg-zenith-secondary/8 pointer-events-none absolute top-[35%] right-1/4 h-[550px] w-[550px] rounded-full blur-[180px]"
                     style={{ animationDelay: '3s' }}
                 />
 
                 {toast && (
-                    <div className="fixed top-20 right-6 z-50 flex max-w-sm items-center space-x-3 rounded-2xl border border-amber-500/30 bg-[#0a0d14]/95 px-4 py-3 text-slate-200 shadow-2xl backdrop-blur-md">
-                        <div className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-amber-400" />
+                    <div className="border-zenith-primary/30 bg-card/95 fixed top-20 right-6 z-50 flex max-w-sm items-center space-x-3 rounded-2xl border px-4 py-3 text-slate-200 shadow-2xl backdrop-blur-md">
+                        <div className="bg-zenith-primary-hover h-2 w-2 flex-shrink-0 animate-pulse rounded-full" />
                         <span className="text-xs font-medium">{toast}</span>
                         <button
                             type="button"
@@ -302,7 +302,7 @@ export default function CreatorOsZenithHomepage() {
                             onClick={scrollToTop}
                             {...interactiveProps}
                         >
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 shadow-lg shadow-amber-500/20 transition-transform hover:scale-105">
+                            <div className="from-zenith-primary via-zenith-accent to-zenith-primary-hover shadow-zenith-primary/20 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr shadow-lg transition-transform hover:scale-105">
                                 <Icon
                                     name="crown"
                                     className="h-5 w-5 text-black"
@@ -311,7 +311,7 @@ export default function CreatorOsZenithHomepage() {
                             <div>
                                 <span className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
                                     Creator OS
-                                    <span className="xs:inline-block hidden rounded-full border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-amber-300">
+                                    <span className="xs:inline-block border-zenith-primary/30 bg-zenith-primary/15 text-zenith-primary-hover hidden rounded-full border px-2 py-0.5 font-mono text-[10px] tracking-wider">
                                         ZENITH
                                     </span>
                                 </span>
@@ -321,28 +321,28 @@ export default function CreatorOsZenithHomepage() {
                         <nav className="hidden items-center space-x-8 text-sm font-medium text-slate-300 md:flex">
                             <a
                                 href="#platform"
-                                className="transition-colors hover:text-amber-300"
+                                className="hover:text-zenith-primary-hover transition-colors"
                                 {...interactiveProps}
                             >
                                 Platform
                             </a>
                             <a
                                 href="#monetize"
-                                className="transition-colors hover:text-amber-300"
+                                className="hover:text-zenith-primary-hover transition-colors"
                                 {...interactiveProps}
                             >
                                 Monetize
                             </a>
                             <a
                                 href="#discover"
-                                className="transition-colors hover:text-amber-300"
+                                className="hover:text-zenith-primary-hover transition-colors"
                                 {...interactiveProps}
                             >
                                 Discover
                             </a>
                             <a
                                 href="#business"
-                                className="transition-colors hover:text-amber-300"
+                                className="hover:text-zenith-primary-hover transition-colors"
                                 {...interactiveProps}
                             >
                                 For your business
@@ -362,8 +362,8 @@ export default function CreatorOsZenithHomepage() {
                                 className="group relative overflow-hidden rounded-full p-[1px] focus:outline-none"
                                 {...interactiveProps}
                             >
-                                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 to-yellow-300 transition-all duration-300 group-hover:scale-105" />
-                                <span className="relative flex items-center space-x-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-2.5 text-sm font-bold text-black shadow-lg shadow-amber-500/20">
+                                <span className="from-zenith-primary to-zenith-accent absolute inset-0 rounded-full bg-gradient-to-r transition-all duration-300 group-hover:scale-105" />
+                                <span className="from-zenith-primary to-zenith-accent shadow-zenith-primary/20 relative flex items-center space-x-2 rounded-full bg-gradient-to-r px-6 py-2.5 text-sm font-bold text-black shadow-lg">
                                     <span>Start Creating</span>
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </span>
@@ -387,10 +387,10 @@ export default function CreatorOsZenithHomepage() {
                 </header>
 
                 {mobileMenuOpen && (
-                    <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#030406]/98 px-6 pt-24 pb-12 backdrop-blur-2xl md:hidden">
+                    <div className="bg-background/98 fixed inset-0 z-50 flex flex-col overflow-y-auto px-6 pt-24 pb-12 backdrop-blur-2xl md:hidden">
                         <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-6">
                             <div className="flex items-center space-x-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 font-bold text-black">
+                                <div className="bg-zenith-primary flex h-8 w-8 items-center justify-center rounded-lg font-bold text-black">
                                     Z
                                 </div>
                                 <span className="font-bold text-white">
@@ -422,7 +422,7 @@ export default function CreatorOsZenithHomepage() {
                                     {...interactiveProps}
                                 >
                                     <span>{label}</span>
-                                    <ArrowRight className="h-4 w-4 text-amber-400" />
+                                    <ArrowRight className="text-zenith-primary-hover h-4 w-4" />
                                 </a>
                             ))}
                         </div>
@@ -439,7 +439,7 @@ export default function CreatorOsZenithHomepage() {
                             <a
                                 href="/register"
                                 onClick={closeMobileMenu}
-                                className="flex w-full items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 py-4 font-bold text-black shadow-lg shadow-amber-500/25"
+                                className="from-zenith-primary to-zenith-accent shadow-zenith-primary/25 flex w-full items-center justify-center space-x-2 rounded-xl bg-gradient-to-r py-4 font-bold text-black shadow-lg"
                                 {...interactiveProps}
                             >
                                 <span>Start Creating</span>
@@ -453,12 +453,12 @@ export default function CreatorOsZenithHomepage() {
                     <section className="relative mx-auto max-w-7xl px-6 pt-32 pb-20 sm:pt-42 md:pb-32">
                         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
                             <div className="z-10 flex flex-col items-start space-y-6 lg:col-span-5">
-                                <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.2em] text-amber-400 uppercase">
+                                <span className="border-zenith-primary/20 bg-zenith-primary/10 text-zenith-primary-hover rounded-full border px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.2em] uppercase">
                                     THE ELITE CREATOR STANDARD
                                 </span>
                                 <h1 className="text-4xl leading-[1.08] font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
                                     Build the world around{' '}
-                                    <span className="bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                                    <span className="from-zenith-primary-hover via-zenith-accent to-zenith-primary bg-gradient-to-r bg-clip-text text-transparent">
                                         your work.
                                     </span>
                                 </h1>
@@ -472,7 +472,7 @@ export default function CreatorOsZenithHomepage() {
                                 <div className="flex w-full flex-col items-stretch space-y-3 pt-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
                                     <a
                                         href="/register"
-                                        className="flex transform items-center justify-center space-x-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 px-7 py-4 text-base font-bold text-black shadow-xl shadow-amber-500/25 transition-all hover:-translate-y-0.5 hover:opacity-95"
+                                        className="from-zenith-primary to-zenith-accent shadow-zenith-primary/25 flex transform items-center justify-center space-x-2 rounded-full bg-gradient-to-r px-7 py-4 text-base font-bold text-black shadow-xl transition-all hover:-translate-y-0.5 hover:opacity-95"
                                         {...interactiveProps}
                                     >
                                         <span>Start Creating</span>
@@ -500,17 +500,17 @@ export default function CreatorOsZenithHomepage() {
                                 <div className="flex items-center space-x-3 pt-4">
                                     <div className="flex -space-x-2.5">
                                         <img
-                                            className="h-8 w-8 rounded-full border-2 border-[#030406] object-cover"
+                                            className="border-background h-8 w-8 rounded-full border-2 object-cover"
                                             src="/images/home/creator-hero-2.png"
                                             alt="Creator"
                                         />
                                         <img
-                                            className="h-8 w-8 rounded-full border-2 border-[#030406] object-cover"
+                                            className="border-background h-8 w-8 rounded-full border-2 object-cover"
                                             src="/images/home/creator-hero-3.png"
                                             alt="Creator"
                                         />
                                         <img
-                                            className="h-8 w-8 rounded-full border-2 border-[#030406] object-cover"
+                                            className="border-background h-8 w-8 rounded-full border-2 object-cover"
                                             src="/images/home/creator-hero.png"
                                             alt="Creator"
                                         />
@@ -522,8 +522,8 @@ export default function CreatorOsZenithHomepage() {
                             </div>
 
                             <div className="relative flex items-center justify-center lg:col-span-7">
-                                <div className="animate-float-zenith relative flex h-[520px] w-full max-w-[620px] items-center justify-center overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-b from-[#0a0d14]/90 to-[#030406]/95 p-6 shadow-2xl backdrop-blur-xl sm:h-[580px]">
-                                    <div className="group absolute z-20 h-[340px] w-[220px] overflow-hidden rounded-2xl border border-amber-500/30 shadow-2xl sm:h-[380px] sm:w-[260px]">
+                                <div className="animate-float-zenith border-zenith-primary/20 from-card/90 to-background/95 relative flex h-[520px] w-full max-w-[620px] items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-b p-6 shadow-2xl backdrop-blur-xl sm:h-[580px]">
+                                    <div className="group border-zenith-primary/30 absolute z-20 h-[340px] w-[220px] overflow-hidden rounded-2xl border shadow-2xl sm:h-[380px] sm:w-[260px]">
                                         <img
                                             src="/images/home/creator-hero-1.png"
                                             alt="Luna Kai"
@@ -533,14 +533,14 @@ export default function CreatorOsZenithHomepage() {
                                             <div className="mb-2 flex items-center space-x-3">
                                                 <img
                                                     src="/images/home/creator-hero-2.png"
-                                                    className="h-10 w-10 rounded-full border border-amber-400/50 object-cover"
+                                                    className="border-zenith-primary-hover/50 h-10 w-10 rounded-full border object-cover"
                                                     alt="Luna Avatar"
                                                 />
                                                 <div>
                                                     <h4 className="text-sm leading-none font-bold text-white">
                                                         Luna Kai
                                                     </h4>
-                                                    <span className="text-[11px] text-amber-300">
+                                                    <span className="text-zenith-primary-hover text-[11px]">
                                                         @lunakai
                                                     </span>
                                                 </div>
@@ -555,7 +555,7 @@ export default function CreatorOsZenithHomepage() {
                                                         'Now following Luna Kai!',
                                                     )
                                                 }
-                                                className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 py-1.5 text-xs font-bold text-black shadow-md transition-opacity hover:opacity-90"
+                                                className="from-zenith-primary to-zenith-accent w-full rounded-lg bg-gradient-to-r py-1.5 text-xs font-bold text-black shadow-md transition-opacity hover:opacity-90"
                                                 {...interactiveProps}
                                             >
                                                 Follow
@@ -564,11 +564,11 @@ export default function CreatorOsZenithHomepage() {
                                     </div>
 
                                     <div
-                                        className="absolute top-6 left-6 z-30 hidden w-44 rounded-2xl border border-amber-500/20 bg-[#0d1017]/95 p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
+                                        className="border-zenith-primary/20 bg-popover/95 absolute top-6 left-6 z-30 hidden w-44 rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
                                         {...interactiveProps}
                                     >
                                         <div className="mb-2 flex items-center space-x-2.5">
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                            <div className="bg-zenith-primary/20 text-zenith-primary-hover flex h-7 w-7 items-center justify-center rounded-lg">
                                                 <Crown className="h-4 w-4" />
                                             </div>
                                             <span className="text-xs font-bold text-white">
@@ -577,26 +577,26 @@ export default function CreatorOsZenithHomepage() {
                                         </div>
                                         <div className="space-y-1.5 text-[11px] text-slate-300">
                                             <div className="flex items-center space-x-2">
-                                                <User className="h-3 w-3 text-amber-400" />
+                                                <User className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Profile</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Store className="h-3 w-3 text-amber-400" />
+                                                <Store className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Storefront</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Globe className="h-3 w-3 text-amber-400" />
+                                                <Globe className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Your space</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div
-                                        className="absolute top-6 right-6 z-30 hidden w-44 rounded-2xl border border-amber-500/20 bg-[#0d1017]/95 p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
+                                        className="border-zenith-primary/20 bg-popover/95 absolute top-6 right-6 z-30 hidden w-44 rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
                                         {...interactiveProps}
                                     >
                                         <div className="mb-2 flex items-center space-x-2.5">
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-500/20 text-yellow-300">
+                                            <div className="bg-zenith-secondary/20 text-zenith-accent flex h-7 w-7 items-center justify-center rounded-lg">
                                                 <DollarSign className="h-4 w-4" />
                                             </div>
                                             <span className="text-xs font-bold text-white">
@@ -605,30 +605,30 @@ export default function CreatorOsZenithHomepage() {
                                         </div>
                                         <div className="space-y-1.5 text-[11px] text-slate-300">
                                             <div className="flex items-center space-x-2">
-                                                <Heart className="h-3 w-3 text-amber-400" />
+                                                <Heart className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Memberships</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Package className="h-3 w-3 text-amber-400" />
+                                                <Package className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Digital products</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Calendar className="h-3 w-3 text-amber-400" />
+                                                <Calendar className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Bookings</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Sparkles className="h-3 w-3 text-amber-400" />
+                                                <Sparkles className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Tips</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div
-                                        className="absolute bottom-6 left-6 z-30 hidden w-44 rounded-2xl border border-amber-500/20 bg-[#0d1017]/95 p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
+                                        className="border-zenith-primary/20 bg-popover/95 absolute bottom-6 left-6 z-30 hidden w-44 rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
                                         {...interactiveProps}
                                     >
                                         <div className="mb-2 flex items-center space-x-2.5">
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-600/20 text-amber-300">
+                                            <div className="bg-zenith-primary/20 text-zenith-primary-hover flex h-7 w-7 items-center justify-center rounded-lg">
                                                 <Users className="h-4 w-4" />
                                             </div>
                                             <span className="text-xs font-bold text-white">
@@ -637,30 +637,30 @@ export default function CreatorOsZenithHomepage() {
                                         </div>
                                         <div className="space-y-1.5 text-[11px] text-slate-300">
                                             <div className="flex items-center space-x-2">
-                                                <MessageSquare className="h-3 w-3 text-amber-400" />
+                                                <MessageSquare className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Messages</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Phone className="h-3 w-3 text-amber-400" />
+                                                <Phone className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Calls</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Radio className="h-3 w-3 text-amber-400" />
+                                                <Radio className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Live</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Users className="h-3 w-3 text-amber-400" />
+                                                <Users className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Community</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div
-                                        className="absolute right-6 bottom-6 z-30 hidden w-44 rounded-2xl border border-amber-500/20 bg-[#0d1017]/95 p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
+                                        className="border-zenith-primary/20 bg-popover/95 absolute right-6 bottom-6 z-30 hidden w-44 rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-transform hover:scale-105 sm:block"
                                         {...interactiveProps}
                                     >
                                         <div className="mb-2 flex items-center space-x-2.5">
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-600/20 text-yellow-300">
+                                            <div className="bg-zenith-secondary/20 text-zenith-accent flex h-7 w-7 items-center justify-center rounded-lg">
                                                 <TrendingUp className="h-4 w-4" />
                                             </div>
                                             <span className="text-xs font-bold text-white">
@@ -669,25 +669,25 @@ export default function CreatorOsZenithHomepage() {
                                         </div>
                                         <div className="space-y-1.5 text-[11px] text-slate-300">
                                             <div className="flex items-center space-x-2">
-                                                <Users className="h-3 w-3 text-amber-400" />
+                                                <Users className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Audience</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <BarChart2 className="h-3 w-3 text-amber-400" />
+                                                <BarChart2 className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>Insights</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Cpu className="h-3 w-3 text-amber-400" />
+                                                <Cpu className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>AI tools</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
-                                                <Sparkles className="h-3 w-3 text-amber-400" />
+                                                <Sparkles className="text-zenith-primary-hover h-3 w-3" />
                                                 <span>More to come</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="font-serif-italic pointer-events-none absolute top-36 right-8 hidden rotate-12 text-sm tracking-widest text-amber-300/80 sm:block">
+                                    <div className="font-serif-italic text-zenith-primary-hover/80 pointer-events-none absolute top-36 right-8 hidden rotate-12 text-sm tracking-widest sm:block">
                                         Zenith & Champagne Edition
                                     </div>
                                 </div>
@@ -742,11 +742,11 @@ export default function CreatorOsZenithHomepage() {
                             ].map(([icon, title, description]) => (
                                 <div
                                     key={title}
-                                    className="group flex h-72 flex-col justify-between rounded-2xl border border-white/10 bg-[#080b12] p-6 transition-all duration-300 hover:border-amber-500/50 hover:bg-[#0c101b]"
+                                    className="group bg-card hover:border-zenith-primary/50 hover:bg-popover flex h-72 flex-col justify-between rounded-2xl border border-white/10 p-6 transition-all duration-300"
                                     {...interactiveProps}
                                 >
                                     <div>
-                                        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400 transition-transform group-hover:scale-110">
+                                        <div className="border-zenith-primary/20 bg-zenith-primary/10 text-zenith-primary-hover mb-6 flex h-12 w-12 items-center justify-center rounded-xl border transition-transform group-hover:scale-110">
                                             <Icon
                                                 name={icon}
                                                 className="h-6 w-6"
@@ -760,7 +760,7 @@ export default function CreatorOsZenithHomepage() {
                                         </p>
                                     </div>
                                     <div className="flex justify-end pt-4">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-slate-300 transition-all group-hover:bg-amber-500 group-hover:text-black">
+                                        <div className="group-hover:bg-zenith-primary flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-slate-300 transition-all group-hover:text-black">
                                             <ExternalLink className="h-4 w-4" />
                                         </div>
                                     </div>
@@ -775,7 +775,7 @@ export default function CreatorOsZenithHomepage() {
                     >
                         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
                             <div className="flex flex-col items-start space-y-6 lg:col-span-5">
-                                <span className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 uppercase">
+                                <span className="text-zenith-primary-hover text-[11px] font-semibold tracking-[0.2em] uppercase">
                                     Monetize Your Work
                                 </span>
                                 <h2 className="text-3xl leading-tight font-black tracking-tight text-white sm:text-5xl">
@@ -788,7 +788,7 @@ export default function CreatorOsZenithHomepage() {
                                 </p>
                                 <a
                                     href="/register"
-                                    className="flex items-center space-x-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 px-7 py-4 text-base font-bold text-black shadow-xl shadow-amber-500/25 transition-all hover:opacity-95"
+                                    className="from-zenith-primary to-zenith-accent shadow-zenith-primary/25 flex items-center space-x-2 rounded-full bg-gradient-to-r px-7 py-4 text-base font-bold text-black shadow-xl transition-all hover:opacity-95"
                                     {...interactiveProps}
                                 >
                                     <span>Start Creating</span>
@@ -797,7 +797,7 @@ export default function CreatorOsZenithHomepage() {
                             </div>
 
                             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-7 lg:grid-cols-3">
-                                <div className="group relative flex flex-col justify-between rounded-3xl border border-amber-500/30 bg-gradient-to-b from-[#11141d] to-[#080b12] p-5 shadow-2xl sm:col-span-2 lg:col-span-1">
+                                <div className="group border-zenith-primary/30 from-popover to-card relative flex flex-col justify-between rounded-3xl border bg-gradient-to-b p-5 shadow-2xl sm:col-span-2 lg:col-span-1">
                                     <div className="mb-4 h-56 w-full overflow-hidden rounded-2xl border border-white/10">
                                         <img
                                             src="/images/home/creator-hero-1.png"
@@ -845,9 +845,9 @@ export default function CreatorOsZenithHomepage() {
                                 ].map(([icon, title, description]) => (
                                     <div
                                         key={title}
-                                        className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#080b12] p-6 transition-all hover:border-amber-500/30"
+                                        className="bg-card hover:border-zenith-primary/30 flex flex-col justify-between rounded-2xl border border-white/10 p-6 transition-all"
                                     >
-                                        <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
+                                        <div className="bg-zenith-primary/10 text-zenith-primary-hover mb-6 flex h-10 w-10 items-center justify-center rounded-xl">
                                             {icon === 'video' ? (
                                                 <Icon
                                                     name="radio"
@@ -879,7 +879,7 @@ export default function CreatorOsZenithHomepage() {
                         className="mx-auto max-w-7xl border-t border-white/5 px-6 py-24"
                     >
                         <div className="mx-auto mb-16 max-w-2xl text-center">
-                            <span className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 uppercase">
+                            <span className="text-zenith-primary-hover text-[11px] font-semibold tracking-[0.2em] uppercase">
                                 Discover Creators
                             </span>
                             <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-5xl">
@@ -897,25 +897,25 @@ export default function CreatorOsZenithHomepage() {
                                     '/images/home/creator-hero-2.png',
                                     'Marcus Vance',
                                     'Design & Code',
-                                    'amber-400',
+                                    'zenith-primary-hover',
                                 ],
                                 [
                                     '/images/home/creator-hero-3.png',
                                     'Elena Rostova',
                                     'Cinematography',
-                                    'yellow-400',
+                                    'zenith-accent',
                                 ],
                                 [
                                     '/images/home/creator-hero.png',
                                     'Julian Ray',
                                     'Audio Engineering',
-                                    'amber-300',
+                                    'zenith-primary-hover',
                                 ],
                                 [
                                     '/images/home/creator-hero-1.png',
                                     'Luna Kai',
                                     'Visual Arts',
-                                    'amber-400',
+                                    'zenith-primary-hover',
                                 ],
                             ].map(([image, name, category, accent]) => (
                                 <div
@@ -947,9 +947,9 @@ export default function CreatorOsZenithHomepage() {
                         id="business"
                         className="mx-auto max-w-7xl border-t border-white/5 px-6 py-24"
                     >
-                        <div className="flex flex-col items-center justify-between rounded-3xl border border-amber-500/25 bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-transparent p-8 sm:p-12 md:flex-row">
+                        <div className="border-zenith-primary/25 from-zenith-primary/10 via-zenith-secondary/5 flex flex-col items-center justify-between rounded-3xl border bg-gradient-to-r to-transparent p-8 sm:p-12 md:flex-row">
                             <div className="mb-8 max-w-xl md:mb-0">
-                                <span className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 uppercase">
+                                <span className="text-zenith-primary-hover text-[11px] font-semibold tracking-[0.2em] uppercase">
                                     Enterprise & Collectives
                                 </span>
                                 <h2 className="mt-2 mb-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
@@ -965,7 +965,7 @@ export default function CreatorOsZenithHomepage() {
                             <button
                                 type="button"
                                 onClick={() => openModal('Enterprise Inquiry')}
-                                className="rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 px-8 py-4 text-base font-bold whitespace-nowrap text-black shadow-xl transition-all hover:opacity-90"
+                                className="from-zenith-primary to-zenith-accent rounded-full bg-gradient-to-r px-8 py-4 text-base font-bold whitespace-nowrap text-black shadow-xl transition-all hover:opacity-90"
                                 {...interactiveProps}
                             >
                                 Contact Concierge
@@ -974,11 +974,11 @@ export default function CreatorOsZenithHomepage() {
                     </section>
                 </main>
 
-                <footer className="border-t border-white/10 bg-[#010204] px-6 py-16">
+                <footer className="bg-background border-t border-white/10 px-6 py-16">
                     <div className="mx-auto mb-12 grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-4">
                         <div>
                             <div className="mb-4 flex items-center space-x-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-amber-500 to-yellow-400">
+                                <div className="from-zenith-primary to-zenith-accent flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr">
                                     <Crown className="h-4 w-4 text-black" />
                                 </div>
                                 <span className="text-lg font-bold text-white">
@@ -1041,7 +1041,7 @@ export default function CreatorOsZenithHomepage() {
                                                               }
                                                             : undefined
                                                     }
-                                                    className="transition-colors hover:text-amber-300"
+                                                    className="hover:text-zenith-primary-hover transition-colors"
                                                     {...interactiveProps}
                                                 >
                                                     {label}
@@ -1086,7 +1086,7 @@ export default function CreatorOsZenithHomepage() {
 
                 {modalTitle && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-                        <div className="relative w-full max-w-md rounded-3xl border border-amber-500/30 bg-[#0a0d14] p-6 shadow-2xl sm:p-8">
+                        <div className="border-zenith-primary/30 bg-card relative w-full max-w-md rounded-3xl border p-6 shadow-2xl sm:p-8">
                             <button
                                 type="button"
                                 onClick={closeModal}
@@ -1095,7 +1095,7 @@ export default function CreatorOsZenithHomepage() {
                             >
                                 <X className="h-4 w-4" />
                             </button>
-                            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-lg shadow-amber-500/20">
+                            <div className="from-zenith-primary to-zenith-accent shadow-zenith-primary/20 mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr shadow-lg">
                                 <Crown className="h-6 w-6 text-black" />
                             </div>
                             <h3 className="mb-2 text-2xl font-bold text-white">
@@ -1123,12 +1123,12 @@ export default function CreatorOsZenithHomepage() {
                                         type="email"
                                         required
                                         placeholder="name@example.com"
-                                        className="w-full rounded-xl border border-amber-500/30 bg-black/50 px-4 py-3 text-sm text-white transition-colors focus:border-amber-400 focus:outline-none"
+                                        className="border-zenith-primary/30 focus:border-zenith-primary-hover w-full rounded-xl border bg-black/50 px-4 py-3 text-sm text-white transition-colors focus:outline-none"
                                     />
                                 </div>
                                 <button
                                     type="submit"
-                                    className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 py-3.5 text-sm font-bold text-black shadow-lg shadow-amber-500/25 transition-all hover:opacity-95"
+                                    className="from-zenith-primary to-zenith-accent shadow-zenith-primary/25 w-full rounded-xl bg-gradient-to-r py-3.5 text-sm font-bold text-black shadow-lg transition-all hover:opacity-95"
                                     {...interactiveProps}
                                 >
                                     Continue to Workspace

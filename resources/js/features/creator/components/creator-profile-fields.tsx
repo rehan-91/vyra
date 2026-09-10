@@ -55,7 +55,7 @@ export default function CreatorProfileFields({ creator, errors }: Props) {
                     defaultValue={creator?.bio ?? ''}
                     maxLength={1000}
                     rows={5}
-                    className="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 min-h-32 w-full rounded-xl border bg-[#080b11] px-3.5 py-3 text-sm leading-6 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.025)] transition-[color,background-color,border-color,box-shadow] outline-none focus-visible:ring-[3px]"
+                    className="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 bg-card min-h-32 w-full rounded-xl border px-3.5 py-3 text-sm leading-6 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.025)] transition-[color,background-color,border-color,box-shadow] outline-none focus-visible:ring-[3px]"
                     placeholder="Tell people what you create."
                 />
                 <InputError message={errors.bio} />

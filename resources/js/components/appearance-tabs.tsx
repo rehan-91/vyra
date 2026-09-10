@@ -32,7 +32,7 @@ export default function AppearanceToggleTab({
                     className={cn(
                         'flex items-center rounded-lg px-3.5 py-2 transition-colors',
                         appearance === value
-                            ? 'bg-primary/15 text-primary shadow-[inset_0_0_0_1px_rgb(212_175_55_/_0.2)]'
+                            ? 'bg-primary/15 text-primary shadow-[inset_0_0_0_1px_rgb(242_63_165_/_0.2)]'
                             : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                     )}
                 >
