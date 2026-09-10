@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import VyraLogo from '@/components/vyra-logo';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -21,15 +21,16 @@ export default function AuthSimpleLayout({
                             href={home()}
                             className="group flex flex-col items-center gap-3 font-medium"
                         >
-                            <div className="border-primary/45 bg-primary/10 text-primary group-hover:bg-primary/15 mb-1 flex h-11 w-11 items-center justify-center rounded-xl border transition-colors">
-                                <AppLogoIcon className="size-7 fill-current" />
-                            </div>
+                            <VyraLogo
+                                variant="icon"
+                                iconClassName="size-11 rounded-xl transition-transform group-hover:scale-105"
+                            />
                             <span className="sr-only">{title}</span>
                         </Link>
 
                         <div className="space-y-2 text-center">
                             <p className="text-primary text-[10px] font-semibold tracking-[0.2em] uppercase">
-                                Creator OS
+                                VYRA
                             </p>
                             <h1 className="text-foreground font-serif text-3xl font-medium tracking-tight">
                                 {title}

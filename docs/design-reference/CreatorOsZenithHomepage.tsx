@@ -5,7 +5,6 @@ import {
     Briefcase,
     Calendar,
     Cpu,
-    Crown,
     DollarSign,
     ExternalLink,
     Globe,
@@ -22,6 +21,7 @@ import {
     Users,
     X,
 } from 'lucide-react';
+import VyraLogo from '@/components/vyra-logo';
 
 type IconProps = { className?: string };
 
@@ -32,7 +32,6 @@ const Icon = ({ name, className }: { name: string } & IconProps) => {
         briefcase: <Briefcase className={className} />,
         calendar: <Calendar className={className} />,
         cpu: <Cpu className={className} />,
-        crown: <Crown className={className} />,
         'dollar-sign': <DollarSign className={className} />,
         'external-link': <ExternalLink className={className} />,
         globe: <Globe className={className} />,
@@ -302,15 +301,13 @@ export default function CreatorOsZenithHomepage() {
                             onClick={scrollToTop}
                             {...interactiveProps}
                         >
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 shadow-lg shadow-amber-500/20 transition-transform hover:scale-105">
-                                <Icon
-                                    name="crown"
-                                    className="h-5 w-5 text-black"
-                                />
-                            </div>
+                            <VyraLogo
+                                variant="icon"
+                                iconClassName="h-10 w-10 rounded-xl shadow-lg transition-transform hover:scale-105"
+                            />
                             <div>
                                 <span className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-                                    Creator OS
+                                    VYRA
                                     <span className="xs:inline-block hidden rounded-full border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-amber-300">
                                         ZENITH
                                     </span>
@@ -390,11 +387,12 @@ export default function CreatorOsZenithHomepage() {
                     <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#030406]/98 px-6 pt-24 pb-12 backdrop-blur-2xl md:hidden">
                         <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-6">
                             <div className="flex items-center space-x-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 font-bold text-black">
-                                    Z
-                                </div>
+                                <VyraLogo
+                                    variant="icon"
+                                    iconClassName="h-8 w-8 rounded-lg"
+                                />
                                 <span className="font-bold text-white">
-                                    Zenith Navigation
+                                    VYRA Navigation
                                 </span>
                             </div>
                             <button
@@ -463,10 +461,9 @@ export default function CreatorOsZenithHomepage() {
                                     </span>
                                 </h1>
                                 <p className="max-w-lg text-base leading-relaxed text-slate-400 sm:text-lg">
-                                    Creator OS Zenith unites high-end digital
-                                    architecture, bespoke commerce, and
-                                    immaculate design into one sanctuary for
-                                    world-class creators.
+                                    VYRA unites high-end digital architecture,
+                                    bespoke commerce, and immaculate design into
+                                    one sanctuary for world-class creators.
                                 </p>
 
                                 <div className="flex w-full flex-col items-stretch space-y-3 pt-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
@@ -568,9 +565,10 @@ export default function CreatorOsZenithHomepage() {
                                         {...interactiveProps}
                                     >
                                         <div className="mb-2 flex items-center space-x-2.5">
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
-                                                <Crown className="h-4 w-4" />
-                                            </div>
+                                            <VyraLogo
+                                                variant="icon"
+                                                iconClassName="h-7 w-7 rounded-lg"
+                                            />
                                             <span className="text-xs font-bold text-white">
                                                 Create
                                             </span>
@@ -712,7 +710,7 @@ export default function CreatorOsZenithHomepage() {
                             </div>
                             <p className="mt-4 max-w-sm text-sm text-slate-400 md:mt-0 md:text-base">
                                 From your profile to bespoke commerce, community
-                                architecture to intelligence—Creator OS provides
+                                architecture to intelligence—VYRA provides
                                 absolute dominion over your business.
                             </p>
                         </div>
@@ -887,8 +885,7 @@ export default function CreatorOsZenithHomepage() {
                             </h2>
                             <p className="mt-3 text-sm text-slate-400">
                                 Join top-tier artists, creators, educators, and
-                                innovators running their business on Creator OS
-                                Zenith.
+                                innovators running their business on VYRA.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -978,11 +975,12 @@ export default function CreatorOsZenithHomepage() {
                     <div className="mx-auto mb-12 grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-4">
                         <div>
                             <div className="mb-4 flex items-center space-x-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-amber-500 to-yellow-400">
-                                    <Crown className="h-4 w-4 text-black" />
-                                </div>
+                                <VyraLogo
+                                    variant="icon"
+                                    iconClassName="h-8 w-8 rounded-lg"
+                                />
                                 <span className="text-lg font-bold text-white">
-                                    Creator OS
+                                    VYRA
                                 </span>
                             </div>
                             <p className="text-xs leading-relaxed text-slate-400">
@@ -1055,9 +1053,7 @@ export default function CreatorOsZenithHomepage() {
                     </div>
 
                     <div className="mx-auto flex max-w-7xl flex-col items-center justify-between border-t border-white/5 pt-8 text-xs text-slate-500 sm:flex-row">
-                        <p>
-                            © 2026 Creator OS Zenith Inc. All rights reserved.
-                        </p>
+                        <p>© 2026 VYRA. All rights reserved.</p>
                         <div className="mt-4 flex space-x-6 sm:mt-0">
                             <a
                                 href="#"
@@ -1095,9 +1091,10 @@ export default function CreatorOsZenithHomepage() {
                             >
                                 <X className="h-4 w-4" />
                             </button>
-                            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-lg shadow-amber-500/20">
-                                <Crown className="h-6 w-6 text-black" />
-                            </div>
+                            <VyraLogo
+                                variant="icon"
+                                iconClassName="mb-5 h-12 w-12 rounded-2xl shadow-lg"
+                            />
                             <h3 className="mb-2 text-2xl font-bold text-white">
                                 {modalTitle}
                             </h3>
@@ -1110,7 +1107,7 @@ export default function CreatorOsZenithHomepage() {
                                     event.preventDefault();
                                     closeModal();
                                     showToast(
-                                        'Success! Redirecting to your Zenith workspace...',
+                                        'Success! Redirecting to your VYRA workspace...',
                                     );
                                 }}
                                 className="space-y-4"

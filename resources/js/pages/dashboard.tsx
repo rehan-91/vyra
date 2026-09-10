@@ -29,7 +29,7 @@ export default function Dashboard({ pendingInvitations = [] }: Props) {
                         className="via-primary/70 absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
                     />
                     <p className="text-primary text-[10px] font-semibold tracking-[0.2em] uppercase">
-                        Creator OS
+                        VYRA
                     </p>
                     <h1 className="mt-2 font-serif text-3xl font-medium tracking-tight">
                         Workspace overview

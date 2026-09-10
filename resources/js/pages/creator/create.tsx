@@ -11,7 +11,7 @@ export default function CreateCreator() {
             <div className="mx-auto w-full max-w-2xl space-y-8 px-4 py-8 sm:px-0 sm:py-12">
                 <Heading
                     title="Create your creator identity"
-                    description="This is the identity that future Creator OS tools will belong to. It is separate from your team workspace."
+                    description="This is the identity that future VYRA tools will belong to. It is separate from your team workspace."
                 />
 
                 <div className="border-border bg-card relative overflow-hidden rounded-2xl border p-5 shadow-[0_24px_70px_-44px_rgb(0_0_0)] sm:p-7">
