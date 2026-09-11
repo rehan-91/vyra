@@ -3,6 +3,7 @@
 namespace App\Domain\Creator\Http\Controllers;
 
 use App\Domain\Creator\Actions\CreateCreator;
+use App\Domain\Creator\Actions\UpdateCreatorProfile;
 use App\Domain\Creator\Exceptions\CreatorAlreadyExists;
 use App\Domain\Creator\Http\Requests\StoreCreatorRequest;
 use App\Domain\Creator\Http\Requests\UpdateCreatorRequest;
@@ -78,11 +79,11 @@ class CreatorController extends Controller
     /**
      * Update the creator identity.
      */
-    public function update(UpdateCreatorRequest $request, Creator $creator): RedirectResponse
+    public function update(UpdateCreatorRequest $request, Creator $creator, UpdateCreatorProfile $updateCreatorProfile): RedirectResponse
     {
         Gate::authorize('update', $creator);
 
-        $creator->update($request->validated());
+        $updateCreatorProfile->handle($creator, $request->validated());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Creator profile updated.')]);
 
@@ -106,7 +107,7 @@ class CreatorController extends Controller
     /**
      * Shape the private management payload.
      *
-     * @return array{id: int, handle: string, displayName: string, bio: string|null}
+     * @return array{id: int, handle: string, displayName: string, bio: string|null, profileVisibility: string, socialLinks: array<string, string>, publicUrl: string}
      */
     private function creator(Creator $creator): array
     {
@@ -115,6 +116,9 @@ class CreatorController extends Controller
             'handle' => $creator->handle,
             'displayName' => $creator->display_name,
             'bio' => $creator->bio,
+            'profileVisibility' => $creator->profile_visibility->value,
+            'socialLinks' => $creator->social_links ?? [],
+            'publicUrl' => url('/@'.$creator->handle),
         ];
     }
 }

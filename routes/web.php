@@ -1,12 +1,17 @@
 <?php
 
 use App\Domain\Creator\Http\Controllers\CreatorController;
+use App\Domain\Creator\Http\Controllers\PublicCreatorProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
+
+Route::get('@{creator:handle}', [PublicCreatorProfileController::class, 'show'])
+    ->where('creator', '[a-z0-9_-]+')
+    ->name('creator.public');
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])

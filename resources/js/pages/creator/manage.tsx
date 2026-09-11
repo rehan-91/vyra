@@ -2,6 +2,7 @@ import { Form, Head } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import CreatorProfileFields from '@/features/creator/components/creator-profile-fields';
+import CreatorProfileSettingsFields from '@/features/creator/components/creator-profile-settings-fields';
 import type { CreatorIdentity } from '@/features/creator/types';
 
 type Props = {
@@ -35,6 +36,10 @@ export default function ManageCreator({ creator }: Props) {
                                     creator={creator}
                                     errors={errors}
                                 />
+                                <CreatorProfileSettingsFields
+                                    creator={creator}
+                                    errors={errors}
+                                />
 
                                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <p
@@ -43,7 +48,10 @@ export default function ManageCreator({ creator }: Props) {
                                     >
                                         {recentlySuccessful
                                             ? 'Creator profile saved.'
-                                            : 'Your Creator is not owned by a Team.'}
+                                            : creator.profileVisibility ===
+                                                'public'
+                                              ? 'Your public profile is live.'
+                                              : 'Your profile is private until you publish it.'}
                                     </p>
                                     <Button
                                         type="submit"
@@ -58,6 +66,29 @@ export default function ManageCreator({ creator }: Props) {
                             </>
                         )}
                     </Form>
+                </div>
+
+                <div className="border-border bg-muted/30 rounded-2xl border p-5 sm:p-6">
+                    <p className="text-xs font-semibold tracking-[0.14em] uppercase">
+                        Public profile
+                    </p>
+                    <p className="text-muted-foreground mt-2 text-sm leading-6">
+                        {creator.profileVisibility === 'public'
+                            ? 'This is the link your audience can visit.'
+                            : 'Publish your profile to make this link available to your audience.'}
+                    </p>
+                    {creator.profileVisibility === 'public' ? (
+                        <a
+                            href={creator.publicUrl}
+                            className="text-primary mt-3 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4"
+                        >
+                            @{creator.handle}
+                        </a>
+                    ) : (
+                        <p className="text-muted-foreground mt-3 text-sm">
+                            @{creator.handle}
+                        </p>
+                    )}
                 </div>
             </div>
         </>

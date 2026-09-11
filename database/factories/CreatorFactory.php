@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Domain\Creator\Enums\CreatorProfileVisibility;
 use App\Domain\Creator\Models\Creator;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,6 +30,18 @@ class CreatorFactory extends Factory
             'handle' => $handle,
             'display_name' => fake()->name(),
             'bio' => fake()->optional()->paragraph(),
+            'profile_visibility' => CreatorProfileVisibility::Private,
+            'social_links' => null,
         ];
+    }
+
+    /**
+     * Indicate that the creator profile is publicly available.
+     */
+    public function public(): static
+    {
+        return $this->state(fn (): array => [
+            'profile_visibility' => CreatorProfileVisibility::Public,
+        ]);
     }
 }

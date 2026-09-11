@@ -2,6 +2,7 @@
 
 namespace App\Domain\Creator\Models;
 
+use App\Domain\Creator\Enums\CreatorProfileVisibility;
 use App\Models\User;
 use Database\Factories\CreatorFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -18,11 +19,13 @@ use Illuminate\Support\Str;
  * @property string $handle
  * @property string $display_name
  * @property string|null $bio
+ * @property CreatorProfileVisibility $profile_visibility
+ * @property array<string, string>|null $social_links
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User $owner
  */
-#[Fillable(['handle', 'display_name', 'bio'])]
+#[Fillable(['handle', 'display_name', 'bio', 'profile_visibility', 'social_links'])]
 class Creator extends Model
 {
     /** @use HasFactory<CreatorFactory> */
@@ -54,6 +57,19 @@ class Creator extends Model
         return Attribute::make(
             set: fn (string $value): string => self::canonicalizeHandle($value),
         );
+    }
+
+    /**
+     * Get the model attribute casts.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'profile_visibility' => CreatorProfileVisibility::class,
+            'social_links' => 'array',
+        ];
     }
 
     /**
