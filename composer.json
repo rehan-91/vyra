@@ -49,6 +49,9 @@
             "npm install",
             "npm run build"
         ],
+        "deploy:migrate": [
+            "@php artisan migrate --force --no-interaction"
+        ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
