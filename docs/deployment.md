@@ -29,41 +29,46 @@ or payment/AI credentials for the current deployment baseline.
 
 ## Deployment contract
 
-The current Wasmer build configuration remains:
+For Wasmer, the root `Anybuild` definition is the source of truth. Its Laravel
+provider configuration uses this release flow:
 
 ```text
-Install: composer install --optimize-autoloader --ignore-platform-reqs --no-scripts --no-interaction && pnpm install
-Build:   composer run-script post-update-cmd && pnpm run build
-Start:   php -S 0.0.0.0:8080 -t public
+GitHub main
+  -> Wasmer / Anybuild
+  -> composer install --optimize-autoloader --ignore-platform-reqs --no-scripts --no-interaction
+  -> pnpm install
+  -> composer run-script post-update-cmd
+  -> vite build
+  -> remove node_modules
+  -> final artifact
+  -> php artisan migrate --force --no-interaction
+  -> php -S 0.0.0.0:8080 -t public
 ```
 
-`pnpm run build` invokes direct `vite build`. This is intentional because it
-keeps the production frontend build within Wasmer's builder-memory limit.
+`pnpm run build` invokes direct `vite build`. Immediately after that build,
+Anybuild runs `run("rm -rf node_modules")`, so build-time Node dependencies are
+not retained in the final artifact.
 
-Run migrations as a distinct, post-deployment operation:
-
-```sh
-composer run deploy:migrate --no-interaction
-```
-
-The Composer entry point runs:
+The single Wasmer `after_deploy` command is:
 
 ```sh
 php artisan migrate --force --no-interaction
 ```
 
-For Wasmer, the root `Anybuild` definition retains the Laravel provider and
-overrides its generated `after_deploy` command with this portable Composer
-command. Do not add a separate Wasmer Edge `jobs` migration: Anybuild packages
-the single overridden `after_deploy` command as the deployment migration.
-Other hosts may invoke `composer run deploy:migrate --no-interaction` from
-their deployment hook, release phase, or CI/CD job.
+Composer remains a build-time tool. Wasmer cannot run Composer as a deployment
+binary, so `after_deploy` invokes PHP directly. Do not add a separate Wasmer
+Edge migration job.
 
-Migrations are intentionally absent from the PHP Start command, so a process
-restart cannot execute them. Laravel's `migrations` table records completed
-migrations, making a single authorized deployment migration operation
-idempotent for an unchanged release.
+Migrations are intentionally absent from both Build and Start. This gives each
+release exactly one authorized, non-interactive migration operation and ensures
+that PHP process restarts cannot run migrations. Laravel's `migrations` table
+keeps the operation idempotent for an unchanged release.
 
-No configuration, route, or view cache command is required by the present
-deployment contract. Add one only when the target host has a defined build and
-runtime environment lifecycle that makes cached configuration safe.
+The initial Wasmer deployment exposed two packaging constraints now addressed
+by this configuration: retaining build-time `node_modules` caused final-artifact
+memory pressure, and Composer cannot be used as a Wasmer deployment binary.
+
+Wasmer injects and manages `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and
+`DB_PASSWORD`. Map `DB_NAME` to Laravel's `DB_DATABASE` in Wasmer environment
+settings; never hard-code production credentials. `APP_KEY` remains a host-held
+production secret and must never be committed.
