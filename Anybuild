@@ -22,4 +22,10 @@ config = laravel_config(
 
 build = laravel_build(config)
 
-laravel_serve(config, build)
+laravel_serve(
+    config,
+    build,
+    build_post = [
+        run("rm -rf node_modules"),
+    ],
+)
