@@ -52,18 +52,17 @@ The Composer entry point runs:
 php artisan migrate --force --no-interaction
 ```
 
-For the current Wasmer Laravel preset, retain the provider-side
-`after_deploy` job that executes `php artisan migrate --force`. It is
-equivalent to the portable command above; the provider job must run once after
-deployment, not in Wasmer's Build or Start command. Other hosts may invoke
-`composer run deploy:migrate --no-interaction` from their deployment hook,
-release phase, or CI/CD job.
+For Wasmer, the root `Anybuild` definition retains the Laravel provider and
+overrides its generated `after_deploy` command with this portable Composer
+command. Do not add a separate Wasmer Edge `jobs` migration: Anybuild packages
+the single overridden `after_deploy` command as the deployment migration.
+Other hosts may invoke `composer run deploy:migrate --no-interaction` from
+their deployment hook, release phase, or CI/CD job.
 
 Migrations are intentionally absent from the PHP Start command, so a process
 restart cannot execute them. Laravel's `migrations` table records completed
 migrations, making a single authorized deployment migration operation
-idempotent for an unchanged release. Do not configure both the Wasmer direct
-job and the Composer command for the same deployment.
+idempotent for an unchanged release.
 
 No configuration, route, or view cache command is required by the present
 deployment contract. Add one only when the target host has a defined build and

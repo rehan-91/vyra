@@ -1,0 +1,25 @@
+# Explicit Anybuild deployment definition for Wasmer's Laravel provider.
+# Keep the provider's Composer, PHP, and Node/Vite pipeline; override only the
+# provider-generated post-deployment migration command.
+
+load("//anybuild/tools:laravel.bzl", "laravel_build", "laravel_config", "laravel_serve")
+
+config = laravel_config(
+    schema = 1,
+    name = "out",
+    commands = {
+        "after_deploy": "composer run deploy:migrate --no-interaction",
+    },
+    composer_enable = True,
+    composer_build_script = "post-update-cmd",
+    node_build_command = "pnpm run build",
+    node_install_inputs = ["package.json"],
+    node_package_manager = "pnpm",
+    php_framework = "laravel",
+    php_public_dir = "public",
+    phpix = True,
+)
+
+build = laravel_build(config)
+
+laravel_serve(config, build)
