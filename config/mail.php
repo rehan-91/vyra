@@ -30,7 +30,7 @@ return [
     | your mailers below. You may also add additional mailers if needed.
     |
     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
-    |            "postmark", "resend", "log", "array",
+    |            "postmark", "log", "array",
     |            "failover", "roundrobin"
     |
     */
@@ -39,7 +39,7 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
+            'scheme' => env('MAIL_SCHEME') ?: env('MAIL_ENCRYPTION'),
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
@@ -59,10 +59,6 @@ return [
             // 'client' => [
             //     'timeout' => 5,
             // ],
-        ],
-
-        'resend' => [
-            'transport' => 'resend',
         ],
 
         'sendmail' => [

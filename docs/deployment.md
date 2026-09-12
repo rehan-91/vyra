@@ -24,8 +24,29 @@ manager; never commit, print, or replace it during deployment.
 Laravel expects `DB_DATABASE`. If a PostgreSQL provider supplies the database
 name as `DB_NAME`, map that value to `DB_DATABASE` in the provider's environment
 settings. Leave `DB_HOST`, `DB_PORT`, `DB_USERNAME`, and `DB_PASSWORD` under
-provider management. VYRA does not require Redis, Reverb, SMTP, object storage,
-or payment/AI credentials for the current deployment baseline.
+provider management. VYRA does not require Redis, Reverb, object storage, or
+payment/AI credentials for the current deployment baseline.
+
+## Staging mail
+
+Wasmer staging currently delivers Laravel mail through Gmail SMTP. Configure
+the following as Wasmer secrets/environment variables; no Gmail credentials or
+App Passwords are committed:
+
+```text
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=<Gmail address>
+MAIL_PASSWORD=<Google App Password>
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=<Gmail address>
+MAIL_FROM_NAME=VYRA
+```
+
+`MAIL_PASSWORD` must be a Google App Password, not the account's normal Gmail
+password. Resend is deferred until VYRA controls its own domain and can be
+reintroduced later as a Laravel mail transport.
 
 ## Deployment contract
 
