@@ -12,13 +12,6 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    env:
-      DB_CONNECTION: pgsql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_DATABASE: creator_os_testing
-      DB_USERNAME: vyra_ci
-      DB_PASSWORD: vyra_ci_password
 
     services:
       postgres:
@@ -55,6 +48,13 @@ jobs:
           node-version: '22'
 
       - name: Wait for PostgreSQL
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: creator_os_testing
+          DB_USERNAME: vyra_ci
+          DB_PASSWORD: vyra_ci_password
         run: |
           for attempt in {1..30}; do
             if php -r 'new PDO("pgsql:host=".getenv("DB_HOST").";port=".getenv("DB_PORT").";dbname=".getenv("DB_DATABASE"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));'; then
@@ -67,7 +67,18 @@ jobs:
           exit 1
 
       - name: Setup Application
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: creator_os_testing
+          DB_USERNAME: vyra_ci
+          DB_PASSWORD: vyra_ci_password
         run: composer setup
 
       - name: Run CI Checks
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          DB_URL: ''
         run: composer ci:check
