@@ -45,73 +45,12 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
-        if (getenv('CI') === 'true') {
-            $this->withoutExceptionHandling();
-        }
-
-        try {
-            $response = $this->post(route('register.store'), [
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
-            ]);
-        } catch (\Throwable $exception) {
-            $mailerName = config('mail.default');
-            $mailer = config("mail.mailers.{$mailerName}", []);
-
-            fwrite(STDERR, json_encode([
-                'registration_exception_diagnostic' => [
-                    'exception_class' => $exception::class,
-                    'exception_message' => $exception->getMessage(),
-                    'exception_file' => $exception->getFile(),
-                    'exception_line' => $exception->getLine(),
-                    'first_stack_frame' => $exception->getTrace()[0] ?? null,
-                    'mail' => [
-                        'default' => $mailerName,
-                        'transport' => $mailer['transport'] ?? null,
-                        'host' => $mailer['host'] ?? null,
-                        'port' => $mailer['port'] ?? null,
-                        'scheme' => $mailer['scheme'] ?? null,
-                        'from_address' => config('mail.from.address'),
-                        'from_name' => config('mail.from.name'),
-                    ],
-                ],
-            ], JSON_THROW_ON_ERROR).PHP_EOL);
-
-            throw $exception;
-        }
-
-        if (getenv('CI') === 'true') {
-            $session = $this->app['session.store'];
-            $guard = auth('web');
-
-            fwrite(STDERR, json_encode([
-                'registration_diagnostic' => [
-                    'response_status' => $response->getStatusCode(),
-                    'redirect_location' => $response->headers->get('Location'),
-                    'validation_errors' => $session->get('errors')?->getBag('default')->messages() ?? [],
-                    'user_exists' => User::query()->where('email', 'test@example.com')->exists(),
-                    'web_guard_authenticated' => $guard->check(),
-                    'web_guard_id' => $guard->id(),
-                    'default_guard' => config('auth.defaults.guard'),
-                    'fortify_guard' => config('fortify.guard'),
-                    'session_driver' => config('session.driver'),
-                    'session_serialization' => config('session.serialization'),
-                    'session_keys' => array_keys($session->all()),
-                    'auth_session_key' => $guard->getName(),
-                    'auth_session_user_id' => $session->get($guard->getName()),
-                    'php_version' => PHP_VERSION,
-                    'php_ini' => php_ini_loaded_file(),
-                    'php_session_ini' => [
-                        'auto_start' => ini_get('session.auto_start'),
-                        'serialize_handler' => ini_get('session.serialize_handler'),
-                        'use_cookies' => ini_get('session.use_cookies'),
-                        'use_strict_mode' => ini_get('session.use_strict_mode'),
-                    ],
-                ],
-            ], JSON_THROW_ON_ERROR).PHP_EOL);
-        }
+        $response = $this->post(route('register.store'), [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
 
         $this->assertAuthenticated();
 
