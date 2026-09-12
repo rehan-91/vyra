@@ -45,12 +45,42 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
-        $response = $this->post(route('register.store'), [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
+        if (getenv('CI') === 'true') {
+            $this->withoutExceptionHandling();
+        }
+
+        try {
+            $response = $this->post(route('register.store'), [
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ]);
+        } catch (\Throwable $exception) {
+            $mailerName = config('mail.default');
+            $mailer = config("mail.mailers.{$mailerName}", []);
+
+            fwrite(STDERR, json_encode([
+                'registration_exception_diagnostic' => [
+                    'exception_class' => $exception::class,
+                    'exception_message' => $exception->getMessage(),
+                    'exception_file' => $exception->getFile(),
+                    'exception_line' => $exception->getLine(),
+                    'first_stack_frame' => $exception->getTrace()[0] ?? null,
+                    'mail' => [
+                        'default' => $mailerName,
+                        'transport' => $mailer['transport'] ?? null,
+                        'host' => $mailer['host'] ?? null,
+                        'port' => $mailer['port'] ?? null,
+                        'scheme' => $mailer['scheme'] ?? null,
+                        'from_address' => config('mail.from.address'),
+                        'from_name' => config('mail.from.name'),
+                    ],
+                ],
+            ], JSON_THROW_ON_ERROR).PHP_EOL);
+
+            throw $exception;
+        }
 
         if (getenv('CI') === 'true') {
             $session = $this->app['session.store'];
