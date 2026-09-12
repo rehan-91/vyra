@@ -53,7 +53,7 @@ class RegistrationTest extends TestCase
         ]);
 
         if (getenv('CI') === 'true') {
-            $session = $response->getSession();
+            $session = $this->app['session.store'];
             $guard = auth('web');
 
             fwrite(STDERR, json_encode([
