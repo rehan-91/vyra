@@ -169,3 +169,31 @@
         background-attachment: fixed;
     }
 }
+
+@layer components {
+    .toaster {
+        --normal-bg: var(--popover);
+        --normal-text: var(--popover-foreground);
+        --normal-border: var(--border);
+        --success-bg: color-mix(in srgb, var(--success) 12%, var(--popover));
+        --success-border: color-mix(in srgb, var(--success) 45%, var(--border));
+        --success-text: var(--success);
+        --info-bg: color-mix(in srgb, var(--signal-accent) 12%, var(--popover));
+        --info-border: color-mix(
+            in srgb,
+            var(--signal-accent) 45%,
+            var(--border)
+        );
+        --info-text: var(--signal-accent);
+        --warning-bg: color-mix(in srgb, var(--warning) 12%, var(--popover));
+        --warning-border: color-mix(in srgb, var(--warning) 45%, var(--border));
+        --warning-text: var(--warning);
+        --error-bg: color-mix(in srgb, var(--destructive) 12%, var(--popover));
+        --error-border: color-mix(
+            in srgb,
+            var(--destructive) 45%,
+            var(--border)
+        );
+        --error-text: var(--destructive);
+    }
+}
