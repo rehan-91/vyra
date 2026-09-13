@@ -498,7 +498,7 @@ export default function CreatorOsZenithHomepage() {
                                         />
                                         <img
                                             className="border-background h-8 w-8 rounded-full border-2 object-cover"
-                                            src="/images/home/creator-hero.png"
+                                            src="/images/home/creator-hero-1.png"
                                             alt="Creator"
                                         />
                                     </div>
@@ -512,7 +512,7 @@ export default function CreatorOsZenithHomepage() {
                                 <div className="animate-float-zenith border-zenith-primary/20 from-card/90 to-background/95 relative flex h-[520px] w-full max-w-[620px] items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-b p-6 shadow-2xl backdrop-blur-xl sm:h-[580px]">
                                     <div className="group border-zenith-primary/30 absolute z-20 h-[340px] w-[220px] overflow-hidden rounded-2xl border shadow-2xl sm:h-[380px] sm:w-[260px]">
                                         <img
-                                            src="/images/home/creator-hero-1.png"
+                                            src="/images/home/creator-hero.png"
                                             alt="Luna Kai"
                                             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                                         />
@@ -788,7 +788,7 @@ export default function CreatorOsZenithHomepage() {
                                 <div className="group border-zenith-primary/30 from-popover to-card relative flex flex-col justify-between rounded-3xl border bg-gradient-to-b p-5 shadow-2xl sm:col-span-2 lg:col-span-1">
                                     <div className="mb-4 h-56 w-full overflow-hidden rounded-2xl border border-white/10">
                                         <img
-                                            src="/images/home/creator-hero-1.png"
+                                            src="/images/home/creator-hero.png"
                                             alt="Digital Products"
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
@@ -893,13 +893,13 @@ export default function CreatorOsZenithHomepage() {
                                     'zenith-accent',
                                 ],
                                 [
-                                    '/images/home/creator-hero.png',
+                                    '/images/home/creator-hero-1.png',
                                     'Julian Ray',
                                     'Audio Engineering',
                                     'zenith-primary-hover',
                                 ],
                                 [
-                                    '/images/home/creator-hero-1.png',
+                                    '/images/home/creator-hero.png',
                                     'Luna Kai',
                                     'Visual Arts',
                                     'zenith-primary-hover',
