@@ -57,7 +57,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('dashboard', ['current_team' => $user->currentTeam->slug]));
     }
 
     public function test_passkey_login_response_redirects_to_the_current_team_dashboard(): void

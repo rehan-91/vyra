@@ -19,7 +19,7 @@ class DashboardTest extends TestCase
         $user = User::factory()->create();
         $team = $user->currentTeam;
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->get(route('dashboard', ['current_team' => $team->slug]));
         $response->assertRedirect(route('login'));
     }
 
@@ -30,7 +30,7 @@ class DashboardTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get(route('dashboard'));
+            ->get(route('dashboard', ['current_team' => $team->slug]));
 
         $response->assertOk();
     }
@@ -51,7 +51,7 @@ class DashboardTest extends TestCase
 
         $response = $this
             ->actingAs($invitedUser)
-            ->get(route('dashboard'));
+            ->get(route('dashboard', ['current_team' => $invitedUser->currentTeam->slug]));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
@@ -81,7 +81,7 @@ class DashboardTest extends TestCase
 
         $response = $this
             ->actingAs($invitedUser)
-            ->get(route('dashboard'));
+            ->get(route('dashboard', ['current_team' => $invitedUser->currentTeam->slug]));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
@@ -106,7 +106,7 @@ class DashboardTest extends TestCase
 
         $response = $this
             ->actingAs($invitedUser)
-            ->get(route('dashboard'));
+            ->get(route('dashboard', ['current_team' => $invitedUser->currentTeam->slug]));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
@@ -135,7 +135,7 @@ class DashboardTest extends TestCase
 
         $response = $this
             ->actingAs($invitedUser)
-            ->get(route('dashboard'));
+            ->get(route('dashboard', ['current_team' => $invitedUser->currentTeam->slug]));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page

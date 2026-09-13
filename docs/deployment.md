@@ -18,11 +18,13 @@ GitHub main
 
 `Anybuild` is the source of truth for this Wasmer integration. Migrations are not part of build or process start, so an unchanged release does not rerun them on restart. Supply `APP_KEY`, PostgreSQL connection values, and mail credentials only through Wasmer secrets/environment configuration. `DB_NAME` from a provider must be mapped to Laravel's `DB_DATABASE`; never commit credentials.
 
-The current deployment baseline does not run Octane, FrankenPHP, Redis, Reverb, Docker Compose, or queue workers. Existing database-backed cache, queue, and session configuration remains the implementation baseline until the runtime foundation is explicitly implemented.
+Wasmer does not run Octane, FrankenPHP, Redis, Reverb, Docker Compose, or queue workers. Its provider-managed PHP process and existing database-backed cache, queue, and session configuration remain unchanged. Phase 3A adds a local Docker Compose integration runtime only; it does not alter Wasmer or make any claim that Wasmer supports long-lived Octane or Reverb workloads.
 
-## Target runtime after Phase 3
+## Local Phase 3A runtime and later deployment target
 
-The approved target is Laravel Octane + FrankenPHP behind CDN/WAF/load balancing, with PostgreSQL, Redis, queue workers, and a separate Laravel Reverb process. Docker Compose will be the canonical reproducible local integration environment for this topology; it is not a staging or production deployment orchestrator by itself.
+Docker Compose is the canonical reproducible local integration environment. Phase 3A runs Laravel Octane + FrankenPHP, PostgreSQL, and Redis. The application binds to `127.0.0.1:8088` by default; PostgreSQL and Redis are reachable only on the private Compose network. Redis is present for later shared infrastructure work and does not change the application's database cache, session, or queue defaults. Run migrations explicitly after the services are healthy with `docker compose exec app php artisan migrate --force --no-interaction`.
+
+The approved later target is Laravel Octane + FrankenPHP behind CDN/WAF/load balancing, with Redis-backed queues and a separate Laravel Reverb process. Docker Compose is not a staging or production deployment orchestrator by itself.
 
 When that phase is implemented, deployment ownership must explicitly provide:
 

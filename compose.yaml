@@ -1,0 +1,84 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '127.0.0.1:${APP_PORT:-8088}:8080'
+        environment:
+            APP_NAME: VYRA
+            APP_ENV: local
+            APP_DEBUG: 'true'
+            APP_KEY: ${APP_KEY:?Set APP_KEY in .env before starting Compose.}
+            APP_URL: http://localhost:${APP_PORT:-8088}
+            DB_CONNECTION: pgsql
+            DB_HOST: postgres
+            DB_PORT: '5432'
+            DB_DATABASE: ${DB_DATABASE:-creator_os}
+            DB_USERNAME: ${DB_USERNAME:-creator_os_app}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env before starting Compose.}
+            CACHE_STORE: database
+            QUEUE_CONNECTION: database
+            SESSION_DRIVER: database
+            REDIS_CLIENT: phpredis
+            REDIS_HOST: redis
+            REDIS_PORT: '6379'
+            OCTANE_SERVER: frankenphp
+            OCTANE_HTTPS: 'false'
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'php',
+                    '-r',
+                    "exit(@file_get_contents('http://127.0.0.1:8080/up') === false ? 1 : 0);",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 6
+            start_period: 20s
+        networks:
+            - default
+            - backend
+
+    postgres:
+        image: postgres:16
+        environment:
+            POSTGRES_DB: ${DB_DATABASE:-creator_os}
+            POSTGRES_USER: ${DB_USERNAME:-creator_os_app}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env before starting Compose.}
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        healthcheck:
+            test:
+                ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+            interval: 10s
+            timeout: 5s
+            retries: 6
+            start_period: 10s
+        networks:
+            - backend
+
+    redis:
+        image: redis:7-alpine
+        command: ['redis-server', '--appendonly', 'no']
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 6
+            start_period: 5s
+        networks:
+            - backend
+
+volumes:
+    postgres-data:
+
+networks:
+    backend:
+        internal: true
