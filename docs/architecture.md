@@ -22,7 +22,7 @@ Calls:    Browser -> WebRTC / specialist media infrastructure
 
 Application nodes are stateless and scale independently from queue workers and Reverb. PostgreSQL remains authoritative for durable business records, including future financial, order, and entitlement data. Redis is supporting infrastructure, never transactional truth. Video and audio media do not pass through Laravel HTTP workers.
 
-Docker Compose is the canonical local integration runtime for the application, PostgreSQL, and Redis. It binds the application only to loopback on port 8088 by default; PostgreSQL and Redis have no host ports. Herd remains a supported lightweight fallback. Laravel Reverb will be a separate long-lived realtime process, not part of FrankenPHP/Octane request workers. Queues isolate slow or failure-prone work from request paths. See the relevant ADRs for the locked runtime decisions.
+Docker Compose is the canonical local integration runtime for the application, PostgreSQL, and Redis. The base `compose.yaml` binds the application only to loopback on port 8088 and has no source bind mounts; PostgreSQL and Redis have no host ports. `compose.dev.yaml` is an explicit development-only overlay: it bind-mounts source for FrankenPHP/Octane, shares Laravel's `public/hot` file with Windows-host Vite HMR on port 5173, and keeps the base integration workflow immutable. Herd remains a supported lightweight fallback. Laravel Reverb will be a separate long-lived realtime process, not part of FrankenPHP/Octane request workers. Queues isolate slow or failure-prone work from request paths. See the relevant ADRs for the locked runtime decisions.
 
 ## Boundaries and lifecycle
 

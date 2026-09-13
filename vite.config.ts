@@ -5,13 +5,14 @@ import tailwindcss from '@tailwindcss/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
+            detectTls: false,
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
@@ -29,6 +30,18 @@ export default defineConfig({
         }),
     ],
     server: {
+        host: '127.0.0.1',
+        port: 5173,
+        strictPort: true,
+        origin: 'http://localhost:5173',
+        cors: {
+            origin: 'http://localhost:8088',
+        },
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+            clientPort: 5173,
+        },
         watch: {
             ignored: [
                 '**/.agents/**',

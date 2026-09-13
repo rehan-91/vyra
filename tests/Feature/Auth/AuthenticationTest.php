@@ -25,6 +25,24 @@ class AuthenticationTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_unverified_users_are_redirected_to_email_verification_when_visiting_login(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->get(route('login'))
+            ->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_verified_users_are_redirected_to_their_current_team_dashboard_when_visiting_login(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('login'))
+            ->assertRedirect(route('dashboard', ['current_team' => $user->currentTeam->slug]));
+    }
+
     public function test_login_screen_includes_team_invitation_context()
     {
         $owner = User::factory()->create();

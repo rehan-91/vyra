@@ -17,6 +17,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        $middleware->redirectUsersTo(function (Request $request): string {
+            $user = $request->user();
+
+            if (! $user?->hasVerifiedEmail()) {
+                return route('verification.notice');
+            }
+
+            $team = $user->currentTeam ?? $user->personalTeam();
+
+            abort_if(! $team, 403);
+
+            return route('dashboard', ['current_team' => $team->slug]);
+        });
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,

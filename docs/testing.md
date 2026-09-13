@@ -20,6 +20,8 @@ Phase 3A installs Laravel Octane and supplies a Docker Compose integration runti
 
 When Docker is available, validate the Compose runtime with `docker compose up --build`, `docker compose exec app php artisan migrate --force --no-interaction`, and HTTP checks for `/up`, authentication, and a public creator profile. Restart the application container and repeat the health and request checks. PostgreSQL and Redis must stay unreachable from the host unless a deliberately temporary local override is added.
 
+For fast local frontend work, start the explicit development overlay with `docker compose -f compose.yaml -f compose.dev.yaml up`, then run `npm run dev` on Windows. Laravel detects the host Vite server through the bind-mounted `public/hot` file; React, TypeScript, CSS, Tailwind, and public-file changes do not require an image rebuild. Reload Octane explicitly after PHP, route, configuration, or Blade changes with `docker compose -f compose.yaml -f compose.dev.yaml exec app php artisan octane:reload`. Do not use the development overlay for immutable integration verification.
+
 Later Phase 3 stages must add coverage for:
 
 - Octane runtime behavior and repeated-request scenarios that expose leaked static, singleton, container, user, authorization, or request state;
