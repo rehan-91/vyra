@@ -1,6 +1,6 @@
-# Creator OS Domain Modules
+# VYRA Domain Modules
 
-`app/Domain` is the home of Creator OS business capabilities. Each module owns
+`app/Domain` is the home of VYRA business capabilities. Each module owns
 its domain language, application actions, policies, events, jobs, and data
 access boundaries. HTTP controllers remain adapters and must not contain core
 business rules.

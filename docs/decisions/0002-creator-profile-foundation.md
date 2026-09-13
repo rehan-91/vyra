@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for the first Phase 2 Creator Profile slice.
+Accepted for the first Phase 2 VYRA Creator Profile slice.
 
 ## Decision
 

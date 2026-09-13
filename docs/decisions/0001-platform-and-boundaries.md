@@ -2,36 +2,18 @@
 
 ## Status
 
-Accepted for Phase 0.
+Accepted.
 
 ## Decision
 
-Creator OS uses Laravel 13 on PHP 8.3+, React 19, TypeScript, Inertia 3, and
-Tailwind CSS 4. PostgreSQL is the active development and target transactional
-database. Redis is the future shared cache, queue, rate-limit, and realtime
-support store; database-backed cache, queue, and sessions are accepted during
-Phase 0.
+VYRA uses Laravel 13 on PHP 8.3+, React 19, TypeScript, Inertia 3, and Tailwind CSS 4. PostgreSQL is the transactional source of truth. The application is a domain-oriented modular monolith: Laravel owns domain logic, persistence, authorization, queues, and integrations, while React/Inertia is the primary UI architecture.
 
-The application is a domain-oriented modular monolith. Laravel owns domain
-logic, persistence, authorization, queues, and integrations. React/Inertia is
-the primary UI architecture.
+Redis supports cache, queues, rate limiting, distributed locks, and appropriate shared short-lived state when the approved runtime foundation is implemented. It is never authoritative for durable business or financial records. The selected HTTP runtime and realtime boundary are recorded in ADRs 0003 and 0005; their implementation is deferred to Phase 3.
 
-Next.js is not used as the primary application because it would split authority
-between application backends without a demonstrated need. Microservices are
-deferred because current product scope does not justify their operational,
-transactional, and observability costs.
-
-Inertia SSR is disabled in Phase 0 because no supported SSR runtime is
-provisioned. It may be enabled only with an owned deployment/runtime design.
-Reverb and Echo are likewise deferred until an approved phase needs realtime
-delivery.
+Next.js is not the primary application and Node.js is not the primary backend because they would split application authority without a demonstrated need. Microservices are deferred unless evidence establishes a bounded need with ownership, operational, transactional, and observability justification.
 
 ## Consequences
 
-New capabilities are organized under `app/Domain`; services are extracted only
-when evidence establishes a bounded need. OpenSearch, ClickHouse, specialist
-media infrastructure, and AI product subsystems remain deferred.
+New capabilities are organized under `app/Domain`; substantial UI capabilities are organized under `resources/js/features`. Services are extracted only when evidence establishes a bounded need. OpenSearch, warehouse/OLAP systems, specialist media infrastructure, and AI product subsystems remain deferred until an approved capability requires them.
 
-The starter-kit Team model remains a temporary collaboration/workspace
-primitive. It must not be treated as the final Creator OS tenancy or
-organization model without an approved domain decision.
+The starter-kit Team model remains a temporary collaboration/workspace primitive. It must not be treated as VYRA's final tenancy or organization model without an approved domain decision.

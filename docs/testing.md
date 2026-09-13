@@ -1,35 +1,27 @@
 # Testing Policy
 
-Creator OS uses `creator_os` as its normal development database and targets
-PostgreSQL in development and production. The default test suite intentionally
-uses in-memory SQLite through `phpunit.xml`: it is safe to run locally and
-remains usable in CI without a separately provisioned database.
+VYRA targets PostgreSQL for development and production transactional behavior. The default test suite uses in-memory SQLite through `phpunit.xml`; it is safe for local use and CI. Run normal checks with:
 
-PostgreSQL compatibility is validated with the opt-in `phpunit.pgsql.xml`
-configuration. It always selects the isolated `creator_os_testing` database;
-tests must never target the developer `creator_os` database. Connection
-credentials must come from the local environment or CI secrets and must not be
-committed.
-
-Before running the PostgreSQL suite, an authorized local PostgreSQL
-administrator must provision the isolated database and assign it to the
-application role:
-
-```sql
-CREATE DATABASE creator_os_testing OWNER creator_os_app;
+```sh
+composer ci:check
 ```
 
-Then run:
+PostgreSQL compatibility is validated with `phpunit.pgsql.xml`, which always selects the isolated `creator_os_testing` database. Never point test commands at the developer `creator_os` database. After an authorized PostgreSQL administrator creates that isolated database and assigns it to the application role, run:
 
 ```sh
 php artisan test --configuration=phpunit.pgsql.xml
 ```
 
-Tests using `RefreshDatabase` will run migrations against the isolated
-database. Do not run this command until `creator_os_testing` exists.
+`RefreshDatabase` migrates the selected test database. CI currently provisions a PostgreSQL service only to verify the isolated connection while running the safe SQLite suite. Database-sensitive behavior must be checked against the isolated PostgreSQL suite before it is complete.
 
-Current GitHub Actions uses the safe SQLite suite because it does not provision
-PostgreSQL. A future CI PostgreSQL service must create only
-`creator_os_testing` (or its isolated CI equivalent) and supply credentials as
-CI secrets. New database-sensitive functionality must be checked against
-PostgreSQL before it is considered complete.
+## Runtime testing after Phase 3
+
+Octane, FrankenPHP, Redis, Reverb, and Docker Compose are target architecture, not currently installed runtime components. When Phase 3 introduces them, preserve normal Laravel feature/unit tests and add focused coverage for:
+
+- Octane runtime behavior and repeated-request scenarios that expose leaked static, singleton, container, user, authorization, or request state;
+- worker restart/recycling and health/readiness behavior where it can be exercised in the integration environment;
+- queue dispatch, job idempotency, retry/failure behavior, and isolation of slow work from HTTP requests;
+- Reverb/realtime authorization, event delivery, reconnection, and graceful degradation, with durable state asserted in PostgreSQL;
+- representative load and performance tests later, with measured latency, throughput, queue delay, database time, memory/restarts, and realtime connection metrics rather than assumed capacity.
+
+Do not treat a passing benchmark as a performance guarantee. Keep integration environments isolated, never use production credentials, and do not run destructive database commands without explicit authorization.

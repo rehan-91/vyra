@@ -1,6 +1,6 @@
 # Feature Modules
 
-Place Creator OS UI capabilities in `resources/js/features/<feature>/` when
+Place VYRA UI capabilities in `resources/js/features/<feature>/` when
 they grow beyond a single page or reusable primitive. A feature may contain its
 own components, hooks, types, and presentation helpers.
 

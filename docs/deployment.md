@@ -1,95 +1,39 @@
 # Deployment
 
-VYRA is a Laravel application with a Vite-built React/Inertia frontend. The
-application is hosting-provider agnostic: a host installs dependencies, builds
-assets, starts PHP with `public` as the document root, and runs the explicit
-deployment migration step once per deployment.
+## Current deployment baseline
 
-## Production environment
+VYRA is currently deployed to Wasmer staging through the root `Anybuild` definition. This remains the active deployment mechanism and must not be replaced as part of documentation or Phase 3 planning work.
 
-Supply these values through the host's secret or environment configuration:
-
-```text
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://<public-hostname>
-APP_KEY=<Laravel application key secret>
-DB_CONNECTION=pgsql
-DB_DATABASE=<provider PostgreSQL database name>
-```
-
-`APP_KEY` is a production secret. Generate and store it in the host's secret
-manager; never commit, print, or replace it during deployment.
-
-Laravel expects `DB_DATABASE`. If a PostgreSQL provider supplies the database
-name as `DB_NAME`, map that value to `DB_DATABASE` in the provider's environment
-settings. Leave `DB_HOST`, `DB_PORT`, `DB_USERNAME`, and `DB_PASSWORD` under
-provider management. VYRA does not require Redis, Reverb, object storage, or
-payment/AI credentials for the current deployment baseline.
-
-## Staging mail
-
-Wasmer staging currently delivers Laravel mail through Gmail SMTP. Configure
-the following as Wasmer secrets/environment variables; no Gmail credentials or
-App Passwords are committed:
-
-```text
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=<Gmail address>
-MAIL_PASSWORD=<Google App Password>
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=<Gmail address>
-MAIL_FROM_NAME=VYRA
-```
-
-`MAIL_PASSWORD` must be a Google App Password, not the account's normal Gmail
-password. Resend is deferred until VYRA controls its own domain and can be
-reintroduced later as a Laravel mail transport.
-
-## Deployment contract
-
-For Wasmer, the root `Anybuild` definition is the source of truth. Its Laravel
-provider configuration uses this release flow:
+Wasmer builds the Laravel application and Vite assets, uses `public` as the document root, executes exactly one post-deployment migration command, and uses the provider-managed PHP runtime. The current release flow is:
 
 ```text
 GitHub main
-  -> Wasmer / Anybuild
-  -> composer install --optimize-autoloader --ignore-platform-reqs --no-scripts --no-interaction
-  -> pnpm install
-  -> composer run-script post-update-cmd
-  -> vite build
-  -> remove node_modules
-  -> final artifact
-  -> php artisan migrate --force --no-interaction
-  -> php -S 0.0.0.0:8080 -t public
+  -> Wasmer / Anybuild build
+  -> Composer dependencies and Laravel assets
+  -> pnpm build
+  -> final artifact without node_modules
+  -> php artisan migrate --force --no-interaction (after deploy)
+  -> provider-managed PHP web process
 ```
 
-`pnpm run build` invokes direct `vite build`. Immediately after that build,
-Anybuild runs `run("rm -rf node_modules")`, so build-time Node dependencies are
-not retained in the final artifact.
+`Anybuild` is the source of truth for this Wasmer integration. Migrations are not part of build or process start, so an unchanged release does not rerun them on restart. Supply `APP_KEY`, PostgreSQL connection values, and mail credentials only through Wasmer secrets/environment configuration. `DB_NAME` from a provider must be mapped to Laravel's `DB_DATABASE`; never commit credentials.
 
-The single Wasmer `after_deploy` command is:
+The current deployment baseline does not run Octane, FrankenPHP, Redis, Reverb, Docker Compose, or queue workers. Existing database-backed cache, queue, and session configuration remains the implementation baseline until the runtime foundation is explicitly implemented.
 
-```sh
-php artisan migrate --force --no-interaction
-```
+## Target runtime after Phase 3
 
-Composer remains a build-time tool. Wasmer cannot run Composer as a deployment
-binary, so `after_deploy` invokes PHP directly. Do not add a separate Wasmer
-Edge migration job.
+The approved target is Laravel Octane + FrankenPHP behind CDN/WAF/load balancing, with PostgreSQL, Redis, queue workers, and a separate Laravel Reverb process. Docker Compose will be the canonical reproducible local integration environment for this topology; it is not a staging or production deployment orchestrator by itself.
 
-Migrations are intentionally absent from both Build and Start. This gives each
-release exactly one authorized, non-interactive migration operation and ensures
-that PHP process restarts cannot run migrations. Laravel's `migrations` table
-keeps the operation idempotent for an unchanged release.
+When that phase is implemented, deployment ownership must explicitly provide:
 
-The initial Wasmer deployment exposed two packaging constraints now addressed
-by this configuration: retaining build-time `node_modules` caused final-artifact
-memory pressure, and Composer cannot be used as a Wasmer deployment binary.
+- supervised Octane/FrankenPHP application processes with health checks, graceful drain/restart, and deliberate worker recycling;
+- Redis reachable by application, queue, and applicable realtime processes;
+- independently supervised queue workers with retry/failure handling;
+- independently supervised Reverb process(es) with websocket health and capacity monitoring;
+- health/readiness checks for application, dependencies, and worker lifecycle.
 
-Wasmer injects and manages `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and
-`DB_PASSWORD`. Map `DB_NAME` to Laravel's `DB_DATABASE` in Wasmer environment
-settings; never hard-code production credentials. `APP_KEY` remains a host-held
-production secret and must never be committed.
+Inertia SSR, if enabled later, is an additional supervised rendering process; it is not a second backend and must have its own health and resource limits. Object storage/CDN and WebRTC/live-media infrastructure are future specialist dependencies. Video must never traverse Laravel HTTP workers.
+
+## Staging mail
+
+Wasmer staging currently sends Laravel mail via Gmail SMTP. Configure SMTP credentials as Wasmer secrets only. `MAIL_PASSWORD` must be a Google App Password, never the account password. Resend remains deferred until VYRA owns its domain and deliberately selects that transport.
