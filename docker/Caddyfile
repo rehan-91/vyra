@@ -25,6 +25,7 @@
 				resp_headers delete
 				uri query {
 					replace authorization REDACTED
+					replace invitation REDACTED
 				}
 			}
 		}

@@ -20,6 +20,12 @@ and a user currently owns at most one creator. This is enforced by the unique
 workspace/collaboration primitive; Creator ownership is not Team ownership and
 does not use `team_id` or `current_team_id`.
 
+For Phase 4 Commerce, `Creator` is the seller/merchant aggregate and its owner
+is the initial Commerce administrator. Team membership never implies product,
+merchant, financial, payout, or Commerce authority. Future delegated Commerce
+access requires explicit roles and authorization rather than reuse of workspace
+membership.
+
 The Creator profile extends that identity with an owner-controlled visibility
 state and allowlisted social links. Profiles default to private; only public
 profiles resolve through the canonical `@handle` URL. Canonicalization is
@@ -27,4 +33,8 @@ applied by the Creator model for all Eloquent writes, while PostgreSQL enforces
 lowercase storage and unique `lower(handle)` values. Public payloads expose
 only handle, display name, bio, and social links. Media uploads, collaborators,
 brands, and monetization remain deferred. Future creator lifecycle events and
-audit records attach at Creator creation and update boundaries.
+audit records attach at Creator creation and update boundaries. Future
+Creator/User deletion must preserve durable order, payment, entitlement,
+ledger, audit, and compliance references; eligible personal data is redacted or
+anonymized without breaking those records. Public profile visibility is
+independently controllable from durable historical identity.

@@ -17,7 +17,7 @@ class TeamInvitation extends Notification implements ShouldQueue
      */
     public function __construct(public TeamInvitationModel $invitation)
     {
-        //
+        $this->afterCommit();
     }
 
     /**

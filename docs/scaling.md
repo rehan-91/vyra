@@ -4,9 +4,9 @@ VYRA scales its modular monolith horizontally before considering service extract
 
 Octane workers are long-lived and require explicit lifecycle management: configured recycling, graceful restart/drain procedures, memory and restart telemetry, and repeated-request testing for state leakage. Recycling reduces operational risk but does not make unsafe singleton or static state correct.
 
-Redis is shared infrastructure for cache, rate limiting, distributed locks, queue transport, and appropriate short-lived or realtime state. Queue workers are independently supervised and scaled according to queue depth, latency, and job type. Jobs must use stable identifiers, bounded retries, idempotent retry semantics where applicable, and observable failure handling.
+Redis is available shared infrastructure for cache, rate limiting, distributed locks, queue transport, and appropriate short-lived or realtime state when an approved feature requires it. The current runtime deliberately keeps database-backed cache, sessions, and queues. Queue workers are independently supervised and scaled according to queue depth, latency, and job type. Jobs must use stable identifiers, bounded retries, idempotent retry semantics where applicable, and observable failure handling.
 
-Laravel Reverb is a separate realtime process/cluster. Reverb nodes and Octane nodes scale independently; Redis may provide shared coordination or pub/sub for multi-node realtime delivery. Presence, typing, and other transient signals may use Redis, while durable messages and business events remain in PostgreSQL.
+When activated for the Relationship/Experiences work, Laravel Reverb is a separate realtime process/cluster. Reverb nodes and Octane nodes scale independently; Redis may provide shared coordination or pub/sub for multi-node realtime delivery. Presence, typing, and other transient signals may use Redis, while durable messages and business events remain in PostgreSQL.
 
 PostgreSQL remains authoritative for transactional state. Redis, Reverb, and application memory must not become the source of truth for orders, entitlements, payments, or future ledger records. Specialist object storage, CDN, WebRTC, and live-media systems own media transport rather than application workers.
 

@@ -12,7 +12,7 @@ PostgreSQL compatibility is validated with `phpunit.pgsql.xml`, which always sel
 php artisan test --configuration=phpunit.pgsql.xml
 ```
 
-`RefreshDatabase` migrates the selected test database. CI currently provisions a PostgreSQL service only to verify the isolated connection while running the safe SQLite suite. Database-sensitive behavior must be checked against the isolated PostgreSQL suite before it is complete.
+`RefreshDatabase` migrates the selected test database. CI provisions the isolated PostgreSQL service, runs the normal SQLite suite, and then runs `php artisan test --configuration=phpunit.pgsql.xml`. Database-sensitive behavior must be checked against the isolated PostgreSQL suite before it is complete.
 
 ## Runtime testing
 
@@ -22,6 +22,10 @@ When Docker is available, validate the Compose runtime with `docker compose up -
 
 The Compose `queue` service runs the database queue separately from Octane. It uses three attempts with a three-second backoff, a 60-second job timeout below the 90-second database retry window, and hourly worker recycling. Failed jobs persist in PostgreSQL's `failed_jobs` table. Run `docker compose exec app php artisan queue:restart` for a graceful worker restart; Docker restarts the exited worker.
 
+The queue connection deliberately does not enable a global after-commit default. Jobs and notifications that depend on committed transaction state must explicitly opt into Laravel's after-commit mechanism, or use an approved transactional outbox design. Critical future jobs must be idempotent under duplicate delivery using server-enforced stable identifiers and durable state transitions where appropriate. Do not put secrets, raw payment credentials, raw KYC documents, signed URLs, or private content unnecessarily into job payloads. Access to `failed_jobs` is operationally restricted; replay is deliberate, reviewed, and safe for the job's idempotency design. Retention and deletion of failed-job data must be defined before sensitive domains are introduced.
+
+Database sessions can contain IP address, user-agent, and serialized session payload data. Treat them as restricted operational data: limit operator access, do not export them casually, and establish retention/pruning before public production launch. Sessions remain database-backed in the current runtime; Redis sessions are deliberately deferred.
+
 For fast local frontend work, start the explicit development overlay with `docker compose -f compose.yaml -f compose.dev.yaml up`, then run `npm run dev` on Windows. Laravel detects the host Vite server through the bind-mounted `public/hot` file; React, TypeScript, CSS, Tailwind, and public-file changes do not require an image rebuild. Reload Octane explicitly after PHP, route, configuration, or Blade changes with `docker compose -f compose.yaml -f compose.dev.yaml exec app php artisan octane:reload`, then confirm `/up` and `/ready`. If the HTTP container itself must be restarted, run `docker compose -f compose.yaml -f compose.dev.yaml restart app` and repeat those checks; this restarts only the Octane application service, not the separate queue worker. Do not use the development overlay for immutable integration verification.
 
 Later feature work must add coverage for:
@@ -29,6 +33,7 @@ Later feature work must add coverage for:
 - Octane runtime behavior and repeated-request scenarios that expose leaked static, singleton, container, user, authorization, or request state;
 - worker restart/recycling behavior where it can be exercised in the integration environment;
 - queue idempotency conventions for future domain jobs and queue-depth/latency monitoring;
+- registration age-boundary, private-DOB serialization, and any later age-assurance flow applicable to a feature;
 - Reverb/realtime authorization, event delivery, reconnection, and graceful degradation, with durable state asserted in PostgreSQL;
 - representative load and performance tests later, with measured latency, throughput, queue delay, database time, memory/restarts, and realtime connection metrics rather than assumed capacity.
 

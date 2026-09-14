@@ -48,13 +48,62 @@ class RegistrationTest extends TestCase
         $response = $this->post(route('register.store'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'date_of_birth' => today()->subYears(18)->toDateString(),
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
         $this->assertAuthenticated();
 
-        $user = User::where('email', 'test@example.com')->first();
+        $user = User::where('email', 'test@example.com')->firstOrFail();
+        $this->assertSame(today()->subYears(18)->toDateString(), $user->date_of_birth?->toDateString());
         $response->assertRedirect(route('dashboard', ['current_team' => $user->currentTeam->slug]));
+    }
+
+    public function test_underage_users_cannot_register(): void
+    {
+        $response = $this->from(route('register'))->post(route('register.store'), [
+            'name' => 'Underage User',
+            'email' => 'underage@example.com',
+            'date_of_birth' => today()->subYears(18)->addDay()->toDateString(),
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('date_of_birth');
+
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['email' => 'underage@example.com']);
+    }
+
+    public function test_date_of_birth_is_required_to_register(): void
+    {
+        $response = $this->from(route('register'))->post(route('register.store'), [
+            'name' => 'Missing Date User',
+            'email' => 'missing-date@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('date_of_birth');
+
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['email' => 'missing-date@example.com']);
+    }
+
+    public function test_date_of_birth_is_not_shared_with_authenticated_inertia_pages(): void
+    {
+        $user = User::factory()->create(['date_of_birth' => '1990-01-01']);
+
+        $this->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->missing('auth.user.date_of_birth'),
+            );
     }
 }

@@ -28,7 +28,7 @@ User-facing brand: VYRA. Technical repository/project identifiers may remain cre
 
 The earlier Next.js + React + Node.js baseline is superseded. The locked application stack is Laravel 13 + PHP 8.3+ + React 19 + TypeScript + Inertia 3.
 
-The runtime decision is now explicit: VYRA uses Laravel Octane with FrankenPHP as the high-performance HTTP application runtime, with Redis, Laravel Queues and Laravel Reverb as first-class infrastructure.
+The runtime decision is now explicit: VYRA uses Laravel Octane with FrankenPHP as the high-performance HTTP application runtime. PostgreSQL-backed Laravel queues are active; Redis is available but deliberately not the cache, session, or queue default; Reverb/Echo are introduced only when their later realtime feature boundary becomes active.
 
 Docker Compose becomes the canonical reproducible local runtime for the full platform stack once the runtime foundation is established. Herd may remain useful for lightweight Laravel work, but Docker is the reference environment for integration testing of the production-like runtime.
 
@@ -41,9 +41,9 @@ Docker Compose becomes the canonical reproducible local runtime for the full pla
 | SSR                | Inertia SSR when deliberately enabled                | Optional server-side rendering for selected page/SEO/performance requirements; managed as a separate long-running process.    |
 | UI                 | Tailwind CSS v4 + shadcn/ui                          | Custom VYRA design system.                                                                                                    |
 | OLTP database      | PostgreSQL                                           | Transactional truth for identity, commerce, payments, ledger and entitlements.                                                |
-| Cache/shared state | Redis                                                | Cache, rate limiting, distributed locks and appropriate short-lived/shared state.                                             |
-| Queues             | Redis + Laravel Queues                               | Asynchronous work, notifications, media jobs, analytics dispatch and other non-request work.                                  |
-| Realtime           | Laravel Reverb + Echo                                | WebSockets, presence, realtime application events and message delivery.                                                       |
+| Cache/shared state | Redis when justified                                 | Available for cache, rate limiting, distributed locks and appropriate short-lived/shared state; not active by default today.  |
+| Queues             | Laravel database queue (Redis later when justified)  | Asynchronous work, notifications, media jobs, analytics dispatch and other non-request work.                                  |
+| Realtime           | Laravel Reverb + Echo (later phase)                  | Separate WebSockets, presence, realtime application events and message delivery when required.                                |
 | Calls              | WebRTC + specialist media infrastructure             | Audio/video sessions; never expose application servers as media transport.                                                    |
 | Live               | Specialist ingest/transcoding/CDN                    | Scalable live video; video never passes through normal Laravel HTTP requests.                                                 |
 | Media              | S3-compatible object storage + CDN                   | Private/public assets, variants and secure delivery.                                                                          |
@@ -59,7 +59,7 @@ VYRA remains a modular monolith first, with strong domain boundaries. Services a
 
 The high-performance runtime does not change the domain architecture. Octane is an application-server optimization; it is not a reason to turn the monolith into microservices.
 
-Application nodes are stateless. Reverb owns persistent realtime connections. CDN/media infrastructure owns large media delivery. Redis and queues remove long-running work from request paths.
+Application nodes are stateless. When activated, Reverb owns persistent realtime connections. CDN/media infrastructure owns large media delivery. Queue workers remove long-running work from request paths; Redis is activated only for an approved supporting role.
 
 Reliability rule: if chat fails, video should not necessarily fail; if analytics is delayed, payment settlement must continue. Payment, entitlement and ledger paths receive the highest reliability priority.
 
@@ -74,7 +74,7 @@ Browser
   │                         ├── Queue workers
   │                         └── Object storage / CDN
   │
-  ├── WebSocket ──► Reverb cluster ──► Redis
+  ├── WebSocket ──► Reverb cluster ──► Redis (when the realtime phase requires it)
   │
   ├── Media ──────► Object storage / CDN
   │
@@ -183,6 +183,10 @@ Use RBAC for coarse roles plus resource/attribute checks for creator, team, prod
 
 Resolve requested objects and verify the actor’s relationship and entitlement before returning data. Protect against IDOR/BOLA.
 
+For Commerce, `Creator` is the seller/merchant aggregate and its owning user is the initial Commerce administrator. Team membership and `current_team` are collaboration context only; they do not imply product, merchant, financial, payout, or Commerce authority. Future delegated Commerce authority requires explicit roles, policies, and authorization rules.
+
+Creator deactivation and public profile visibility must remain independent from durable financial and historical records. Future user or creator deletion workflows must preserve referentially valid order, payment, entitlement, ledger, audit, and compliance history; eligible personal data may be anonymized or redacted without breaking those records.
+
 Privileged access requires separate admin identity controls, least privilege, short-lived elevation, strong MFA, risk controls and comprehensive audit logging.
 
 ## 12. Media & Content Security
@@ -199,7 +203,7 @@ Video/audio never passes through normal Laravel application requests.
 
 Messaging requires conversation-level authorization, rate limits, anti-spam, abuse reporting, attachment scanning, block/mute controls and retention rules.
 
-Laravel Reverb + Echo provides realtime transport. The database remains authoritative for durable state.
+When the Relationship/Experiences work requires realtime transport, Laravel Reverb + Echo will provide it. The database remains authoritative for durable state.
 
 Redis may provide cache, rate limiting, distributed locks, presence/shared short-lived state and queue transport. Redis-backed counters are not a replacement for durable ledger or transactional records.
 
@@ -279,7 +283,7 @@ Regional rollout should be feature-gated until the required controls, contracts,
 
 ### 17.3 Age, minors and restricted content
 
-Age policy is a launch-blocking product decision for any feature that may expose minors to adult, restricted or otherwise age-sensitive experiences. VYRA must define supported user age ranges, creator eligibility, age-assurance requirements, restricted-content rules, reporting/escalation paths and safeguards before those features are enabled.
+VYRA is adults-only: new accounts require a date of birth and the server rejects applicants under 18. Date of birth is private sensitive account data; it is not exposed in public creator data, ordinary shared frontend props, URLs, analytics, or unnecessary logs. This registration boundary is not identity verification. Creator monetization, payouts, restricted content, live streaming, and private calls may require stronger age/identity assurance through a specialist provider when those features are introduced. Jurisdiction-specific obligations must be verified before enabling affected markets or features.
 
 Do not infer a legal age threshold or a single global age-verification standard from this blueprint. The applicable requirement must be verified for each launch market and product category.
 
@@ -320,18 +324,18 @@ Evidence should be access-controlled, retention-aware and exportable without exp
 
 Compliance is implemented when the corresponding capability is introduced, with final legal/compliance validation before launch:
 
-| Area | Architecture now | Feature implementation |
-| --- | --- | --- |
-| Privacy/data governance | Required now | As data flows are introduced; launch review before production |
-| Age/minor policy | Decision and policy required before relevant features | Before age-sensitive content/experiences |
-| KYC/identity verification | Provider boundary + minimal-data design | Creator onboarding/payout phase |
-| Payments | State-machine, audit and provider-boundary design | Payments phase |
-| Tax | Data model and reporting boundary | Payments/payouts/global phases as applicable |
-| Refunds/disputes | Immutable financial evidence | Ledger/payments phases |
-| Payout controls | Verification, holds and audit boundary | Payout phase |
-| Content moderation | Reporting/case/audit model | Content/relationship/experience phases |
-| Grievance handling | Case/audit boundary | Before public launch of applicable flows |
-| Regional compliance | Feature-gating and jurisdiction matrix | Before each market launch |
+| Area                      | Architecture now                                  | Feature implementation                                        |
+| ------------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| Privacy/data governance   | Required now                                      | As data flows are introduced; launch review before production |
+| Age/minor policy          | 18+ account boundary; stronger assurance planned  | Before high-risk content, monetization, or experiences        |
+| KYC/identity verification | Provider boundary + minimal-data design           | Creator onboarding/payout phase                               |
+| Payments                  | State-machine, audit and provider-boundary design | Payments phase                                                |
+| Tax                       | Data model and reporting boundary                 | Payments/payouts/global phases as applicable                  |
+| Refunds/disputes          | Immutable financial evidence                      | Ledger/payments phases                                        |
+| Payout controls           | Verification, holds and audit boundary            | Payout phase                                                  |
+| Content moderation        | Reporting/case/audit model                        | Content/relationship/experience phases                        |
+| Grievance handling        | Case/audit boundary                               | Before public launch of applicable flows                      |
+| Regional compliance       | Feature-gating and jurisdiction matrix            | Before each market launch                                     |
 
 ## 19. Security Program
 
@@ -465,8 +469,8 @@ The runtime foundation is introduced early, before Commerce and Payments become 
 | Process model      | Multiple stateless application workers; worker recycling configured deliberately.               |
 | Request state      | Request-scoped/container-managed state only; no cross-request business state in process memory. |
 | Slow work          | Laravel Queue workers, not Octane request workers.                                              |
-| Realtime           | Separate Reverb process/cluster.                                                                |
-| Cache/shared state | Redis.                                                                                          |
+| Realtime           | Separate Reverb process/cluster when the realtime phase requires it.                            |
+| Cache/shared state | Redis when an approved feature justifies activation; database defaults remain current today.    |
 | Database truth     | PostgreSQL.                                                                                     |
 | Local environment  | Docker Compose production-like runtime.                                                         |
 | Performance proof  | Load testing, profiling and SLO/capacity measurements; no unverified marketing claims.          |
@@ -475,7 +479,7 @@ The runtime foundation is introduced early, before Commerce and Payments become 
 
 Docker Compose is the canonical local integration environment for the VYRA runtime. The objective is reproducibility: developers should be able to run the same classes of services locally that exist in staging/production.
 
-The initial compose topology should remain intentionally small: application/FrankenPHP + Octane, PostgreSQL, Redis, Reverb and a queue worker. Add SSR and other specialist services when their feature work is introduced.
+The initial compose topology remains intentionally small: application/FrankenPHP + Octane, PostgreSQL, Redis, and a database queue worker. Add Reverb, SSR, and other specialist services only when their feature work is introduced.
 
 Local development must support hot code iteration without making production runtime assumptions unsafe. Octane watch/restart behavior should be configured deliberately rather than relying on stale workers.
 
@@ -486,11 +490,11 @@ docker compose
 ├── app        → FrankenPHP + Laravel Octane
 ├── postgres   → PostgreSQL
 ├── redis      → Redis
-├── reverb     → Laravel Reverb
 ├── queue      → Laravel queue worker
+├── reverb*    → Laravel Reverb when realtime is enabled
 └── ssr*       → Inertia SSR process when enabled
 
-* optional until SSR is deliberately activated.
+* optional until the relevant capability is deliberately activated.
 ```
 
 ## 29. Octane-Safe Engineering Standard — NEW
@@ -515,6 +519,8 @@ Use queues for email, notifications, analytics fan-out, media processing, AI wor
 
 Queue jobs must be idempotent where retries are possible, carry stable identifiers, have bounded retry policies and emit useful telemetry.
 
+The global queue after-commit setting remains disabled. A job or notification that depends on successful transaction state must explicitly dispatch after commit or use an approved transactional outbox design. Critical Commerce, payment, entitlement, webhook, reconciliation, and notification jobs must enforce server-side idempotency with stable identifiers; client claims are never authoritative. Failed-job payloads and exception details are restricted operational data and must be minimized, access-controlled, retained deliberately, and replayed only when safe.
+
 A slow third-party dependency must not unnecessarily consume application workers. Timeouts, circuit-breaking/retry strategy and failure states must be designed per integration.
 
 Financial state changes must remain transactionally correct even when downstream notifications or analytics are delayed.
@@ -522,6 +528,8 @@ Financial state changes must remain transactionally correct even when downstream
 ## 31. Realtime Runtime & Reverb Scaling — NEW
 
 Reverb runs as a separate long-lived realtime service/process. It is not embedded into FrankenPHP/Octane request workers.
+
+Reverb/Echo are deliberately deferred until the Relationship/Experiences work requires realtime transport. They are not part of the completed minimum Phase 3 runtime.
 
 Redis may provide the shared coordination/pub-sub layer required for multi-node realtime deployments.
 
@@ -557,27 +565,27 @@ MVP must-have: authentication; creator profiles; KYC workflow; products; members
 
 Defer: full social discovery, advanced live, sophisticated AI, creator marketplace, complex collaboration, international tax/payment expansion and native apps until core economics and reliability are validated.
 
-| Phase                                             | Status / Focus                                                                                                                                        |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 0 — Foundation                              | COMPLETED. Application foundation, architecture, security standards, PostgreSQL, auth, design system, domain structure, CI and deployment foundation. |
-| Phase 1 — Creator Identity & Ownership            | COMPLETED. Creator ownership, canonical handles, policy boundaries, owner CRUD and tests.                                                             |
-| Phase 2 — Creator Profile Foundation              | COMPLETED. Public/private profile visibility, social links, public profile route and security boundaries.                                             |
+| Phase                                             | Status / Focus                                                                                                                                                                                                                                                  |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0 — Foundation                              | COMPLETED. Application foundation, architecture, security standards, PostgreSQL, auth, design system, domain structure, CI and deployment foundation.                                                                                                           |
+| Phase 1 — Creator Identity & Ownership            | COMPLETED. Creator ownership, canonical handles, policy boundaries, owner CRUD and tests.                                                                                                                                                                       |
+| Phase 2 — Creator Profile Foundation              | COMPLETED. Public/private profile visibility, social links, public profile route and security boundaries.                                                                                                                                                       |
 | Phase 3 — Runtime & Performance Foundation        | COMPLETED (minimum foundation). Docker, Octane + FrankenPHP, database queue worker, PostgreSQL CI, readiness checks, lifecycle verification and Octane-safe standards. Reverb/Redis-backed queue transport/advanced observability remain deliberately deferred. |
-| Phase 4 — Commerce Foundation                     | Products, prices, variants, availability, orders and reusable commerce primitives.                                                                    |
-| Phase 5 — Entitlements & Content Access           | Entitlement engine, access rules, private media delivery and content primitives.                                                                      |
-| Phase 6 — Payments & Checkout                     | Payment intents, provider integration, verified webhooks, checkout and payment state machines.                                                        |
-| Phase 7 — Ledger, Refunds & Payouts               | Immutable double-entry ledger, reconciliation, refunds/disputes and creator payout flows.                                                             |
-| Phase 8 — Memberships, Subscriptions & Storefront | Subscriptions, PPV, bundles, storefront presentation and monetization UX.                                                                             |
-| Phase 9 — Relationship Layer                      | Messaging, notifications, CRM, bookings, paid requests and richer analytics.                                                                          |
-| Phase 10 — Experiences                            | Live, calls, events, tickets, collaboration and revenue splits.                                                                                       |
-| Phase 11 — Intelligence                           | AI copilot, churn prediction, recommendations and advanced fraud/risk tooling.                                                                        |
-| Phase 12 — Global & Scale                         | Multi-currency, multi-language, regional payments/tax/compliance and infrastructure expansion.                                                        |
+| Phase 4 — Commerce Foundation                     | Products, prices, variants, availability, orders and reusable commerce primitives, using explicit Creator ownership rather than Team context.                                                                                                                   |
+| Phase 5 — Entitlements & Content Access           | Entitlement engine, access rules, private media delivery and content primitives.                                                                                                                                                                                |
+| Phase 6 — Payments & Checkout                     | Payment intents, provider integration, verified webhooks, checkout and payment state machines.                                                                                                                                                                  |
+| Phase 7 — Ledger, Refunds & Payouts               | Immutable double-entry ledger, reconciliation, refunds/disputes and creator payout flows.                                                                                                                                                                       |
+| Phase 8 — Memberships, Subscriptions & Storefront | Subscriptions, PPV, bundles, storefront presentation and monetization UX.                                                                                                                                                                                       |
+| Phase 9 — Relationship Layer                      | Messaging, notifications, CRM, bookings, paid requests and richer analytics.                                                                                                                                                                                    |
+| Phase 10 — Experiences                            | Live, calls, events, tickets, collaboration and revenue splits.                                                                                                                                                                                                 |
+| Phase 11 — Intelligence                           | AI copilot, churn prediction, recommendations and advanced fraud/risk tooling.                                                                                                                                                                                  |
+| Phase 12 — Global & Scale                         | Multi-currency, multi-language, regional payments/tax/compliance and infrastructure expansion.                                                                                                                                                                  |
 
-## 36. Compliance Gates by Phase
+## 35. Compliance Gates by Phase
 
 Compliance is a cross-cutting release gate. It does not mean every future compliance feature is built now.
 
-- **Phase 4 — Commerce:** establish product/order data needed for receipts, pricing disclosures, refund policy references, creator/business identity references and auditability.
+- **Phase 4 — Commerce:** establish product/order data needed for receipts, pricing disclosures, refund policy references, creator/business identity references and auditability. Use explicit Creator ownership; transactional jobs must dispatch after commit and be idempotent where retries are possible.
 - **Phase 5 — Entitlements & Content:** enforce private-access authorization, content reporting hooks and age/restricted-content policy boundaries where applicable.
 - **Phase 6 — Payments:** verify payment-provider contract, webhook evidence, refund/dispute state, payment-data minimization, tax data requirements and applicable payment/compliance obligations before launch of payment flows.
 - **Phase 7 — Ledger/Payouts:** establish creator verification, payout holds/release rules, reconciliation evidence, financial records and applicable reporting/tax controls.
@@ -589,7 +597,7 @@ Compliance is a cross-cutting release gate. It does not mean every future compli
 
 A phase may be technically complete while its production launch remains blocked by unresolved legal/compliance review. The blueprint therefore distinguishes engineering completion from market-launch readiness.
 
-## 35. Correct Build Order — Updated
+## 36. Correct Build Order — Updated
 
 - Freeze product vocabulary and domain boundaries.
 - Maintain migration-ready PostgreSQL schema and authorization matrix.
@@ -632,65 +640,6 @@ These deferred items must be implemented in the phase where their product/runtim
 
 Phase 3 must remain closed unless a new runtime regression or explicit architectural decision reopens it. Do not mix Commerce work into runtime cleanup.
 
-## 37. Master Codex Prompt — Runtime Phase
-
-Use this as the Phase 3 implementation instruction after confirming the repository is clean and the VYRA Master Blueprint v3.0 is present.
-
-```text
-You are the lead staff engineer continuing VYRA, a greenfield creator commerce and monetization platform.
-
-WORKSPACE:
-Use the existing repository. Do not create a nested application. Inspect the current workspace and git state first.
-
-LOCKED APPLICATION STACK:
-- Laravel 13
-- PHP 8.3+
-- React 19
-- TypeScript
-- Inertia 3
-- Tailwind CSS v4 + shadcn/ui
-- PostgreSQL
-- Redis
-- Laravel Queues
-- Laravel Reverb + Echo
-- Laravel Octane + FrankenPHP
-- Object storage + CDN abstraction
-- WebRTC + specialist media infrastructure for future calls
-- Specialist streaming infrastructure + CDN for future live streaming
-- Laravel AI SDK for future AI capabilities
-
-PHASE 3 GOAL:
-Make the existing VYRA application run on a reproducible production-like runtime using Docker, Octane/FrankenPHP, Redis, Reverb and queues, while preserving all current domain behavior.
-
-NON-NEGOTIABLE:
-- PostgreSQL remains transactional truth.
-- Redis is not financial truth.
-- Reverb is separate from Octane HTTP workers.
-- Video never passes through Laravel HTTP workers.
-- Do not create microservices.
-- Do not change auth/session/Fortify behavior unless required by a documented runtime compatibility issue.
-- Do not store request-specific mutable state in static/global/unsafe singleton memory.
-- Do not add unverified performance claims.
-- Do not implement payments, KYC, payouts, live streaming or production AI in this phase.
-
-IMPLEMENT:
-1. Inspect official current Octane/FrankenPHP/Reverb/Redis documentation.
-2. Add/configure Octane + FrankenPHP.
-3. Add Docker Compose for app, PostgreSQL, Redis, Reverb and queue worker.
-4. Configure environment separation safely.
-5. Configure Redis cache and queues.
-6. Configure Reverb/Echo readiness.
-7. Add worker lifecycle/restart strategy and health checks.
-8. Add Octane-safe coding conventions and targeted tests.
-9. Verify the existing test suite under the new runtime assumptions.
-10. Run formatting, static analysis, TypeScript, frontend checks and production build.
-11. Update architecture, scaling, deployment, testing and README documentation.
-12. Commit only after the repository is clean and all gates pass.
-
-FINAL REPORT:
-Report exact files changed, packages installed, runtime commands, Docker services, configuration assumptions, tests, build result, performance/observability additions, remaining gaps and the recommended Phase 4 Commerce plan.
-```
-
 ## 38. Launch Readiness Checklist
 
 Security: threat model complete; secrets managed; authorization tests; dependency scanning; penetration test; incident response plan.
@@ -705,7 +654,7 @@ Performance: load test checkout, content access, messaging and creator dashboard
 
 Runtime: Octane worker lifecycle verified; memory behavior observed; Redis health monitored; Reverb capacity tested; queue retries/dead-letter handling defined; Docker/staging parity reviewed.
 
-## 40. Final Recommendation & Change Record
+## 39. Final Recommendation & Change Record
 
 LOCKED FINAL DECISION: VYRA will be built as a Laravel 13 + React 19 + TypeScript + Inertia 3 modular monolith, backed by PostgreSQL and Redis, with Laravel Octane + FrankenPHP for the HTTP runtime, Laravel Reverb for realtime, Laravel Queues for asynchronous work, and specialist infrastructure for WebRTC/live media.
 

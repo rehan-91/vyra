@@ -32,7 +32,8 @@ class PublicCreatorProfileTest extends TestCase
                 ->missing('creator.id')
                 ->missing('creator.user_id')
                 ->missing('creator.email')
-                ->missing('creator.owner'),
+                ->missing('creator.owner')
+                ->missing('creator.date_of_birth'),
             );
     }
 

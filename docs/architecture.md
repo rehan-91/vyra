@@ -30,6 +30,14 @@ Docker Compose is the canonical local integration runtime for the application, P
 
 Business capabilities belong under `app/Domain/<Domain>`. Controllers adapt HTTP requests to domain actions. Authorization is explicit and resource-scoped; cross-domain effects use named events and jobs rather than implicit controller coupling.
 
+`Creator` is the seller/merchant owner for future Commerce. Its owning user is the initial and only Commerce-administration authority. The starter-kit `Team` and `current_team` are workspace/collaboration context only; they do not grant product, merchant, financial, payout, or Commerce authority. Any future delegated Commerce role requires an explicit role, policy, and approved domain decision.
+
+Jobs that depend on a database transaction must be explicitly dispatched after commit. The queue connection intentionally does not enable a global after-commit default, so a transactional job or notification must opt into Laravel's after-commit mechanism (or an approved outbox design). Critical Commerce, payment, entitlement, webhook, reconciliation, and notification work must tolerate duplicate delivery with server-enforced stable idempotency identifiers; client-supplied success or idempotency claims are never authoritative.
+
+Creators and users may not be destroyed in a way that breaks future order, payment, entitlement, ledger, audit, or compliance references. Creator public visibility is independently controllable. Future deletion workflows must preserve durable internal references and use anonymization/redaction for eligible personal data rather than breaking financial history.
+
+VYRA accounts are adults-only. Registration collects a private date of birth and validates 18+ eligibility on the server; the date is hidden from ordinary authenticated Inertia props and is never part of public creator serialization. Stronger age/identity assurance, KYC providers, and restricted-content controls are deferred to the relevant trust, monetization, payment, and experience phases.
+
 Octane workers are long-lived. Request-specific user, authorization, tenant, payment, or business state must not be stored in static properties, globals, or unsafe singletons. Worker recycling is deliberate operational hygiene, not a substitute for safe application code.
 
 Inertia SSR remains disabled. If introduced, it is a separately supervised rendering process with its own health checks and resource limits; it consumes Laravel-provided page data and is not a second backend.

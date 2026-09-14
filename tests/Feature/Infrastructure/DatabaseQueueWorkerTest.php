@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Tests\Support\Jobs\DatabaseQueueTestJob;
+use Tests\Support\Jobs\IdempotentDatabaseQueueTestJob;
 use Tests\TestCase;
 
 class DatabaseQueueWorkerTest extends TestCase
@@ -61,6 +62,30 @@ class DatabaseQueueWorkerTest extends TestCase
         $this->workOnce();
 
         $this->assertDatabaseCount('jobs', 0);
+    }
+
+    public function test_transaction_dependent_team_invitation_notifications_are_marked_for_after_commit_dispatch(): void
+    {
+        $notification = new TeamInvitationNotification(TeamInvitation::factory()->make());
+
+        $this->assertTrue($notification->afterCommit);
+    }
+
+    public function test_duplicate_delivery_is_handled_by_a_server_side_idempotency_key(): void
+    {
+        $idempotencyKey = 'database-queue-idempotency';
+        $resultKey = 'database-queue-idempotency-result';
+
+        dispatch(new IdempotentDatabaseQueueTestJob($idempotencyKey, $resultKey));
+        dispatch(new IdempotentDatabaseQueueTestJob($idempotencyKey, $resultKey));
+
+        $this->assertDatabaseCount('jobs', 2);
+
+        $this->workOnce();
+        $this->workOnce();
+
+        $this->assertDatabaseCount('jobs', 0);
+        $this->assertSame(1, Cache::get($resultKey));
     }
 
     public function test_database_worker_retries_a_failed_job_within_its_attempt_limit(): void
