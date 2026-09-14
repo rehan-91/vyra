@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
+import { ButtonLoading, loadingMessages } from '@/components/ui/loading';
 import CreatorProfileFields from '@/features/creator/components/creator-profile-fields';
 import CreatorProfileSettingsFields from '@/features/creator/components/creator-profile-settings-fields';
 import type { CreatorIdentity } from '@/features/creator/types';
@@ -58,9 +59,14 @@ export default function ManageCreator({ creator }: Props) {
                                         disabled={processing}
                                         data-test="update-creator-button"
                                     >
-                                        {processing
-                                            ? 'Saving…'
-                                            : 'Save creator profile'}
+                                        <ButtonLoading
+                                            isLoading={processing}
+                                            loadingLabel={
+                                                loadingMessages.saving
+                                            }
+                                        >
+                                            Save creator profile
+                                        </ButtonLoading>
                                     </Button>
                                 </div>
                             </>

@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
+import { ButtonLoading, loadingMessages } from '@/components/ui/loading';
 import CreatorProfileFields from '@/features/creator/components/creator-profile-fields';
 
 export default function CreateCreator() {
@@ -33,9 +34,14 @@ export default function CreateCreator() {
                                         disabled={processing}
                                         data-test="create-creator-button"
                                     >
-                                        {processing
-                                            ? 'Creating identity…'
-                                            : 'Create creator identity'}
+                                        <ButtonLoading
+                                            isLoading={processing}
+                                            loadingLabel={
+                                                loadingMessages.creatingProfile
+                                            }
+                                        >
+                                            Create creator identity
+                                        </ButtonLoading>
                                     </Button>
                                 </div>
                             </>
