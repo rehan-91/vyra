@@ -91,4 +91,4 @@ jobs:
           DB_DATABASE: creator_os_testing
           DB_USERNAME: vyra_ci
           DB_PASSWORD: vyra_ci_password
-        run: php artisan test --configuration=phpunit.pgsql.xml
+        run: vendor/bin/phpunit --configuration=phpunit.pgsql.xml
