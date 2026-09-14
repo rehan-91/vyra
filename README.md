@@ -8,7 +8,7 @@ The canonical product and architecture specification is the [VYRA Master Bluepri
 
 The completed foundation includes authentication, teams as temporary workspace infrastructure, creator ownership, and public/private creator profiles. Commerce, payments, ledger, entitlements, media delivery, and realtime product features are not implemented yet.
 
-Phase 3A establishes Laravel Octane + FrankenPHP and a Docker Compose integration environment containing the application, PostgreSQL, and Redis. The application continues to use its database cache, session, and queue defaults; Redis-backed queues, Laravel Reverb, and SSR are deliberately not enabled yet.
+Phase 3 establishes the completed minimum runtime foundation: Laravel Octane + FrankenPHP and a Docker Compose integration environment containing the application, PostgreSQL, Redis, and a separate database queue worker. The application continues to use its database cache, session, and queue defaults; Redis-backed queues, Laravel Reverb, and SSR are deliberately not enabled yet.
 
 ## Development
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Phase 3A implements the local Docker Compose foundation; deployment migration remains deferred.
+Accepted. Phase 3 implements the completed minimum local Docker Compose foundation; deployment migration remains deferred.
 
 ## Decision
 
@@ -14,6 +14,6 @@ Slow or failure-prone work belongs on Laravel queues rather than Octane request 
 
 ## Consequences
 
-Phase 3A validates package compatibility, long-running-worker safety, repeated-request behavior, and local worker lifecycle. It makes no fixed throughput, latency, RAM, or cost guarantee. Representative load characteristics and a production deployment plan remain later work.
+Phase 3 validates package compatibility, long-running-worker safety, repeated-request behavior, and local worker lifecycle. It makes no fixed throughput, latency, RAM, or cost guarantee. Representative load characteristics and a production deployment plan remain later work.
 
 The currently working Wasmer deployment remains unchanged until an approved implementation and deployment plan supports this runtime.

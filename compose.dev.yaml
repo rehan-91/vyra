@@ -6,6 +6,13 @@ services:
             - app-node-modules:/app/node_modules
             - app-bootstrap-cache:/app/bootstrap/cache
 
+    queue:
+        volumes:
+            - .:/app
+            - app-vendor:/app/vendor
+            - app-node-modules:/app/node_modules
+            - app-bootstrap-cache:/app/bootstrap/cache
+
 volumes:
     app-bootstrap-cache:
     app-vendor:

@@ -2,7 +2,7 @@
 
 VYRA is a Laravel 13 modular monolith with React 19, TypeScript, and Inertia 3 as its primary UI architecture. Laravel owns domain logic, persistence, authorization, queues, and integrations; React/Inertia renders the product experience. Node tooling is used for frontend development and builds, not as a primary backend.
 
-The [VYRA Master Blueprint](blueprint/VYRA_MASTER_BLUEPRINT.md) is the canonical product and architecture specification. Phase 3A implements the local HTTP/runtime foundation below; Reverb, Redis-backed queues, and SSR remain deferred.
+The [VYRA Master Blueprint](blueprint/VYRA_MASTER_BLUEPRINT.md) is the canonical product and architecture specification. Phase 3 implements the completed minimum local HTTP/runtime foundation below; Reverb, Redis-backed queues, and SSR remain deferred.
 
 ## Runtime topology
 
@@ -12,17 +12,19 @@ Browser
   -> Laravel Octane + FrankenPHP application nodes
        -> PostgreSQL (transactional truth)
        -> Redis (available shared infrastructure; not yet the cache or queue default)
-       -> Laravel queue workers (future Phase 3 stage)
+       -> Laravel database queue worker (separate service)
        -> Object storage / CDN (assets)
 
-Realtime: Browser -> Laravel Reverb -> Redis where appropriate (future Phase 3 stage)
+Realtime: Browser -> Laravel Reverb -> Redis where appropriate (future feature stage)
 Media:    Browser -> specialist media infrastructure / object storage / CDN
 Calls:    Browser -> WebRTC / specialist media infrastructure
 ```
 
 Application nodes are stateless and scale independently from queue workers and Reverb. PostgreSQL remains authoritative for durable business records, including future financial, order, and entitlement data. Redis is supporting infrastructure, never transactional truth. Video and audio media do not pass through Laravel HTTP workers.
 
-Docker Compose is the canonical local integration runtime for the application, PostgreSQL, and Redis. The base `compose.yaml` binds the application only to loopback on port 8088 and has no source bind mounts; PostgreSQL and Redis have no host ports. `compose.dev.yaml` is an explicit development-only overlay: it bind-mounts source for FrankenPHP/Octane, shares Laravel's `public/hot` file with Windows-host Vite HMR on port 5173, and keeps the base integration workflow immutable. Herd remains a supported lightweight fallback. Laravel Reverb will be a separate long-lived realtime process, not part of FrankenPHP/Octane request workers. Queues isolate slow or failure-prone work from request paths. See the relevant ADRs for the locked runtime decisions.
+Docker Compose is the canonical local integration runtime for the application, PostgreSQL, Redis, and a separate database queue worker. The base `compose.yaml` binds the application only to loopback on port 8088 and has no source bind mounts; PostgreSQL and Redis have no host ports. The worker runs independently of Octane with bounded retries and deliberate recycling. `compose.dev.yaml` is an explicit development-only overlay: it bind-mounts source for FrankenPHP/Octane and the worker, shares Laravel's `public/hot` file with Windows-host Vite HMR on port 5173, and keeps the base integration workflow immutable. Herd remains a supported lightweight fallback. Laravel Reverb will be a separate long-lived realtime process, not part of FrankenPHP/Octane request workers. Queues isolate slow or failure-prone work from request paths. See the relevant ADRs for the locked runtime decisions.
+
+`/up` is the lightweight liveness endpoint used by the Compose application health check; it confirms that the HTTP application can respond. `/ready` is the readiness endpoint: it performs a minimal PostgreSQL `select 1` query and returns `204` only when the transactional database is reachable, otherwise `503`. Redis is intentionally excluded until it becomes an active application dependency.
 
 ## Boundaries and lifecycle
 

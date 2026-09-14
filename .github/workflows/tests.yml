@@ -82,3 +82,13 @@ jobs:
           DB_DATABASE: ':memory:'
           DB_URL: ''
         run: composer ci:check
+
+      - name: Run PostgreSQL Test Suite
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: creator_os_testing
+          DB_USERNAME: vyra_ci
+          DB_PASSWORD: vyra_ci_password
+        run: php artisan test --configuration=phpunit.pgsql.xml

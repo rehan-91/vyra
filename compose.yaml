@@ -76,6 +76,54 @@ services:
         networks:
             - backend
 
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command:
+            [
+                'php',
+                'artisan',
+                'queue:work',
+                'database',
+                '--sleep=3',
+                '--tries=3',
+                '--backoff=3',
+                '--timeout=60',
+                '--max-time=3600',
+            ]
+        environment:
+            APP_NAME: VYRA
+            APP_ENV: local
+            APP_KEY: ${APP_KEY:?Set APP_KEY in .env before starting Compose.}
+            DB_CONNECTION: pgsql
+            DB_HOST: postgres
+            DB_PORT: '5432'
+            DB_DATABASE: ${DB_DATABASE:-creator_os}
+            DB_USERNAME: ${DB_USERNAME:-creator_os_app}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env before starting Compose.}
+            CACHE_STORE: database
+            QUEUE_CONNECTION: database
+            DB_QUEUE_RETRY_AFTER: '90'
+            QUEUE_FAILED_DRIVER: database-uuids
+        restart: unless-stopped
+        stop_grace_period: 90s
+        depends_on:
+            postgres:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'test -r /proc/1/cmdline && grep -aq "queue:work" /proc/1/cmdline',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 6
+            start_period: 10s
+        networks:
+            - backend
+
 volumes:
     postgres-data:
 
