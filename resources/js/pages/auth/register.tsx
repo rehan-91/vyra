@@ -1,12 +1,20 @@
 import { Form, Head } from '@inertiajs/react';
 import { CalendarIcon, Info } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TeamInvitationAlert from '@/components/team-invitation-alert';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -60,10 +68,44 @@ function formatDateOfBirth(value: string): string {
         : 'DD / MM / YYYY';
 }
 
+function useMobileDatePicker(): boolean {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 639px)');
+        const update = () => setIsMobile(mediaQuery.matches);
+
+        update();
+        mediaQuery.addEventListener('change', update);
+
+        return () => mediaQuery.removeEventListener('change', update);
+    }, []);
+
+    return isMobile;
+}
+
+function useWideDatePicker(): boolean {
+    const [isWide, setIsWide] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(min-width: 1200px)');
+        const update = () => setIsWide(mediaQuery.matches);
+
+        update();
+        mediaQuery.addEventListener('change', update);
+
+        return () => mediaQuery.removeEventListener('change', update);
+    }, []);
+
+    return isWide;
+}
+
 export default function Register({ passwordRules, teamInvitation }: Props) {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [ageInformationOpen, setAgeInformationOpen] = useState(false);
+    const isMobileDatePicker = useMobileDatePicker();
+    const isWideDatePicker = useWideDatePicker();
     const today = new Date();
     const maximumDate = new Date(
         today.getFullYear(),
@@ -71,6 +113,43 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
         today.getDate(),
     );
     const selectedDate = fromDateOfBirthValue(dateOfBirth);
+    const datePickerTrigger = (hasError: boolean) => (
+        <Button
+            type="button"
+            variant="outline"
+            tabIndex={3}
+            aria-labelledby="date_of_birth-label"
+            aria-required="true"
+            aria-invalid={hasError}
+            aria-describedby={hasError ? 'date_of_birth-error' : undefined}
+            className="h-11 w-full justify-between rounded-xl px-3.5 text-left font-normal"
+        >
+            <span className={dateOfBirth ? undefined : 'text-muted-foreground'}>
+                {formatDateOfBirth(dateOfBirth)}
+            </span>
+            <CalendarIcon className="text-muted-foreground size-4" />
+        </Button>
+    );
+    const datePickerCalendar = (
+        <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => {
+                if (!date) {
+                    return;
+                }
+
+                setDateOfBirth(toDateOfBirthValue(date));
+                setDatePickerOpen(false);
+            }}
+            disabled={{ after: maximumDate }}
+            captionLayout="dropdown"
+            reverseYears
+            startMonth={new Date(1900, 0)}
+            endMonth={maximumDate}
+            defaultMonth={selectedDate ?? maximumDate}
+        />
+    );
 
     return (
         <>
@@ -164,11 +243,10 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
                                             className="w-64 space-y-1.5"
                                         >
                                             <p className="text-sm font-semibold">
-                                                18+ only
+                                                Adults only
                                             </p>
                                             <p className="text-muted-foreground text-sm">
-                                                VYRA is for adults aged 18 and
-                                                over.
+                                                VYRA is for adults 18 and over.
                                             </p>
                                         </PopoverContent>
                                     </Popover>
@@ -178,67 +256,68 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
                                     name="date_of_birth"
                                     value={dateOfBirth}
                                 />
-                                <Popover
-                                    open={datePickerOpen}
-                                    onOpenChange={setDatePickerOpen}
-                                >
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            tabIndex={3}
-                                            aria-labelledby="date_of_birth-label"
-                                            aria-required="true"
-                                            aria-invalid={Boolean(
-                                                errors.date_of_birth,
-                                            )}
-                                            aria-describedby={
-                                                errors.date_of_birth
-                                                    ? 'date_of_birth-error'
-                                                    : undefined
-                                            }
-                                            className="h-11 w-full justify-between rounded-xl px-3.5 text-left font-normal"
-                                        >
-                                            <span
-                                                className={
-                                                    dateOfBirth
-                                                        ? undefined
-                                                        : 'text-muted-foreground'
-                                                }
-                                            >
-                                                {formatDateOfBirth(dateOfBirth)}
-                                            </span>
-                                            <CalendarIcon className="text-muted-foreground size-4" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent
-                                        align="start"
-                                        className="w-auto border-0 bg-transparent p-0 shadow-none"
+                                {isMobileDatePicker ? (
+                                    <Dialog
+                                        open={datePickerOpen}
+                                        onOpenChange={setDatePickerOpen}
                                     >
-                                        <Calendar
-                                            mode="single"
-                                            selected={selectedDate}
-                                            onSelect={(date) => {
-                                                if (!date) {
-                                                    return;
-                                                }
-
-                                                setDateOfBirth(
-                                                    toDateOfBirthValue(date),
-                                                );
-                                                setDatePickerOpen(false);
-                                            }}
-                                            disabled={{ after: maximumDate }}
-                                            captionLayout="dropdown"
-                                            reverseYears
-                                            startMonth={new Date(1900, 0)}
-                                            endMonth={maximumDate}
-                                            defaultMonth={
-                                                selectedDate ?? maximumDate
+                                        <DialogTrigger asChild>
+                                            {datePickerTrigger(
+                                                Boolean(errors.date_of_birth),
+                                            )}
+                                        </DialogTrigger>
+                                        <DialogContent
+                                            showClose={false}
+                                            className="top-auto bottom-0 max-h-[calc(100dvh-0.75rem)] w-full max-w-none translate-y-0 gap-1 overflow-y-auto rounded-t-2xl rounded-b-none p-1.5 sm:max-w-none"
+                                        >
+                                            <DialogTitle className="sr-only">
+                                                Choose date of birth
+                                            </DialogTitle>
+                                            <DialogDescription className="sr-only">
+                                                Select your date of birth from
+                                                the calendar.
+                                            </DialogDescription>
+                                            <div className="flex justify-end">
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-10 px-3"
+                                                    >
+                                                        Close
+                                                    </Button>
+                                                </DialogClose>
+                                            </div>
+                                            <div className="flex justify-center">
+                                                {datePickerCalendar}
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+                                ) : (
+                                    <Popover
+                                        open={datePickerOpen}
+                                        onOpenChange={setDatePickerOpen}
+                                    >
+                                        <PopoverTrigger asChild>
+                                            {datePickerTrigger(
+                                                Boolean(errors.date_of_birth),
+                                            )}
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            side={
+                                                isWideDatePicker
+                                                    ? 'right'
+                                                    : 'top'
                                             }
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                            align="start"
+                                            collisionPadding={12}
+                                            className="w-auto border-0 bg-transparent p-0 shadow-none"
+                                        >
+                                            {datePickerCalendar}
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
                                 <InputError
                                     id="date_of_birth-error"
                                     message={errors.date_of_birth}
