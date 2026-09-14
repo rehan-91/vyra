@@ -1,18 +1,19 @@
-# VYRA MASTER BLUEPRINT v3.1
+# VYRA MASTER BLUEPRINT v3.0
 
 **World-Class Creator Commerce & Monetization Platform — Product, Architecture, Data, Security, Runtime, Operations & Codex Build Plan**
 
 **STATUS: LOCKED MASTER SOURCE OF TRUTH**
 
-## Version 3.1 Change Summary
+## Version 3.0 Change Summary
 
-- Preserves the v3.0 product, architecture, runtime, security and engineering decisions.
-- Adds a cross-phase regulatory, compliance, privacy, trust & safety guardrail without prematurely implementing future compliance features.
-- Establishes an India-first compliance planning posture, with explicit global expansion requirements.
-- Adds compliance-by-design requirements for identity/KYC, payments, payouts, taxes, privacy, content safety, consumer protection, grievance handling and auditability.
-- Distinguishes architectural requirements from jurisdiction-specific legal conclusions; legal obligations must be verified against current authoritative sources and qualified counsel before launch.
-- Reconciles Phase 3 with the actual completed minimum runtime foundation: Octane/FrankenPHP, Docker Compose, database queue worker, PostgreSQL CI, readiness checks and lifecycle verification are complete; Reverb remains deliberately deferred to the Relationship/Experiences work where it becomes necessary.
-- Keeps unsupported benchmark/RAM/cost claims excluded from the locked architecture.
+- Promotes Laravel Octane + FrankenPHP to the locked HTTP runtime.
+- Adds Docker Compose as the canonical reproducible local integration runtime.
+- Makes Redis, Laravel Queues and Reverb operational boundaries explicit.
+- Adds Octane-safe engineering standards and long-running-worker safeguards.
+- Adds SSR process boundary, runtime observability and evidence-driven capacity planning.
+- Aligns the roadmap with the actual completed VYRA phases and the next Runtime & Performance phase.
+- Preserves PostgreSQL as transactional truth and the immutable ledger as financial truth.
+- Excludes unsupported benchmark/RAM/cost claims from the locked architecture.
 
 ## 1. Executive Vision
 
@@ -237,103 +238,7 @@ Define collection purpose, retention, deletion/anonymization, access requests, c
 
 For an India-first launch, map applicable Indian privacy, tax, payments, intermediary/platform, consumer and content-safety obligations and obtain qualified legal review before launch.
 
-## 17. Regulatory, Compliance & Trust Guardrails
-
-VYRA treats compliance as a cross-phase architectural concern rather than a single late-stage feature. The platform should be designed so that identity, payments, payouts, content, communications, analytics and administrative actions can satisfy applicable legal and contractual obligations without requiring a fundamental redesign.
-
-This section is an engineering guardrail, not legal advice. Jurisdiction-specific obligations, thresholds, exemptions, licensing questions and filing/reporting duties must be verified against current authoritative sources and qualified legal/compliance counsel before the relevant feature is launched.
-
-### 17.1 India-first launch posture
-
-Before an India-first launch, VYRA must create a jurisdiction-specific compliance matrix covering, as applicable:
-
-- privacy and personal-data processing;
-- payments, payment aggregation/processing relationships and settlement;
-- creator/KYC and payout onboarding;
-- tax collection, reporting, invoicing and creator tax documentation;
-- consumer protection, refunds, cancellations and disclosures;
-- intermediary/platform and content-safety obligations where applicable;
-- grievance and complaint handling;
-- records, auditability and lawful-request processes;
-- age/minor protection and restricted-content controls;
-- cross-border data transfers and international vendor processing;
-- advertising, promotional and creator-disclosure requirements where applicable.
-
-The matrix must record the requirement, authoritative source, affected product flow, data/process impact, owner, implementation phase, evidence required and legal-review status. No jurisdiction-specific rule should be treated as confirmed merely because it appears in a generic checklist.
-
-### 17.2 Global expansion posture
-
-Global expansion must be jurisdiction-led rather than enabled by simply adding currencies or languages. Before entering a new market, evaluate:
-
-- privacy/data-protection requirements and data-subject rights;
-- payments and payout availability/licensing structure;
-- tax/VAT/GST/sales-tax obligations and reporting;
-- consumer contracts, pricing disclosures, refunds and subscription rules;
-- creator/business verification requirements;
-- content, age-assurance and platform/intermediary obligations;
-- sanctions/restricted-party screening where relevant;
-- cross-border transfer and vendor requirements;
-- local complaint/grievance and record-keeping requirements.
-
-Regional rollout should be feature-gated until the required controls, contracts, notices and operational procedures are verified.
-
-### 17.3 Age, minors and restricted content
-
-Age policy is a launch-blocking product decision for any feature that may expose minors to adult, restricted or otherwise age-sensitive experiences. VYRA must define supported user age ranges, creator eligibility, age-assurance requirements, restricted-content rules, reporting/escalation paths and safeguards before those features are enabled.
-
-Do not infer a legal age threshold or a single global age-verification standard from this blueprint. The applicable requirement must be verified for each launch market and product category.
-
-### 17.4 Compliance-by-design requirements
-
-For every regulated or high-risk flow, engineering must preserve:
-
-- purpose limitation and data minimization;
-- explicit ownership of the business/compliance decision;
-- auditable state transitions;
-- durable evidence where legally or operationally required;
-- least-privilege access to sensitive information;
-- retention/deletion rules;
-- user notices and consent records where applicable;
-- provider/reference IDs instead of raw sensitive records where possible;
-- reproducible operational history for disputes, complaints and investigations.
-
-Compliance controls must fail safely. For example, an unresolved identity, payment, age, risk or moderation requirement should not silently produce an unrestricted payout, entitlement or publication state.
-
-### 17.5 Compliance evidence
-
-The platform should be capable of producing controlled evidence for:
-
-- identity/KYC status and verification-provider references;
-- payment-provider events and reconciliation;
-- refunds, disputes, chargebacks and payout decisions;
-- entitlement/access decisions;
-- moderation and safety actions;
-- user complaints and grievance handling;
-- privileged administrative actions;
-- consent/notice records where applicable;
-- data-access/deletion requests where applicable;
-- security incidents and operational changes.
-
-Evidence should be access-controlled, retention-aware and exportable without exposing unrelated users' sensitive data.
-
-### 17.6 Compliance implementation timing
-
-Compliance is implemented when the corresponding capability is introduced, with final legal/compliance validation before launch:
-
-| Area | Architecture now | Feature implementation |
-| --- | --- | --- |
-| Privacy/data governance | Required now | As data flows are introduced; launch review before production |
-| Age/minor policy | Decision and policy required before relevant features | Before age-sensitive content/experiences |
-| KYC/identity verification | Provider boundary + minimal-data design | Creator onboarding/payout phase |
-| Payments | State-machine, audit and provider-boundary design | Payments phase |
-| Tax | Data model and reporting boundary | Payments/payouts/global phases as applicable |
-| Refunds/disputes | Immutable financial evidence | Ledger/payments phases |
-| Payout controls | Verification, holds and audit boundary | Payout phase |
-| Content moderation | Reporting/case/audit model | Content/relationship/experience phases |
-| Grievance handling | Case/audit boundary | Before public launch of applicable flows |
-| Regional compliance | Feature-gating and jurisdiction matrix | Before each market launch |
-
-## 19. Security Program
+## 17. Security Program
 
 Secure SDLC: threat model → security review → code review → automated tests → dependency scanning → staging → penetration testing → production monitoring.
 
@@ -343,7 +248,7 @@ Testing includes unit, integration, contract, authorization, payment, webhook re
 
 Plan independent penetration testing and progressively formalize controls toward SOC 2/ISO 27001-style governance if required.
 
-## 19. Admin & Operations Console
+## 18. Admin & Operations Console
 
 Support: search users/orders/bookings, safe operational context, support cases and policy-bound actions.
 
@@ -355,7 +260,7 @@ Security: login anomalies, API abuse, privileged actions, audit events and incid
 
 Admin tooling is production-critical software and must receive the same security discipline as the customer product.
 
-## 20. Analytics & Data Platform
+## 19. Analytics & Data Platform
 
 Emit canonical events such as user.created, product.published, payment.completed, entitlement.granted, subscription.renewed, booking.completed and payout.completed.
 
@@ -365,7 +270,7 @@ Core KPIs: GMV, net revenue, MRR, creator earnings, take rate, conversion, ARPU,
 
 Do not send unnecessary sensitive payloads into analytics. Prefer stable internal IDs and aggregated/coarsened data where possible.
 
-## 21. Creator CRM & AI
+## 20. Creator CRM & AI
 
 CRM segmentation may use engagement, purchase history, membership status, recency, frequency and monetary value, subject to privacy and policy.
 
@@ -375,7 +280,7 @@ AI must not directly execute high-impact financial, moderation or account action
 
 Laravel AI SDK is an integration foundation, not automatic intelligence. Provider keys, model choices, prompts, tools, safety controls, cost controls and evaluation still need deliberate design.
 
-## 22. Collaboration & Revenue Splits
+## 21. Collaboration & Revenue Splits
 
 Teams support managers, editors, finance and moderators through role-based access.
 
@@ -383,7 +288,7 @@ Collaboration supports multiple creators on products/events with configurable re
 
 Revenue split calculations feed the same immutable ledger rather than ad-hoc balance arithmetic.
 
-## 23. API & Domain Design
+## 22. API & Domain Design
 
 Use versioned APIs where APIs are exposed, consistent error schemas, idempotency keys for financial mutations, cursor pagination, strict input validation and authorization at the domain boundary.
 
@@ -393,7 +298,7 @@ Webhooks require signature verification, timestamp/replay protection, idempotent
 
 The web application remains Laravel routes/controllers/domain + Inertia/React. A separate API is not required merely because React is used. A future mobile app may consume versioned APIs while sharing domain/application logic.
 
-## 24. Mobile-First UX System
+## 23. Mobile-First UX System
 
 Design at 360/375/390/412px first, then expand to tablet and desktop.
 
@@ -403,7 +308,7 @@ Use strong typography, generous whitespace, subtle borders, restrained shadows a
 
 Core reusable UI primitives: Button, IconButton, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Badge, Card, Sheet, Dialog, Drawer, Dropdown, Tabs, Toast, Alert, Skeleton, EmptyState, ErrorState and Confirmation.
 
-## 25. Greenfield Repository Structure
+## 24. Greenfield Repository Structure
 
 ```text
 app/
@@ -432,7 +337,7 @@ docker/
   (local runtime assets and service configuration as adopted)
 ```
 
-## 26. North-Star Architecture Rules
+## 25. North-Star Architecture Rules
 
 - Money is never a mutable number without ledger evidence.
 - Access is never granted without an entitlement decision.
@@ -448,7 +353,7 @@ docker/
 - Video transport is not application transport.
 - Expensive or failure-prone work belongs off the synchronous request path.
 
-## 27. Runtime & Performance Foundation — NEW
+## 26. Runtime & Performance Foundation — NEW
 
 VYRA adopts Laravel Octane + FrankenPHP as the application HTTP runtime. The goal is to keep the Laravel application warm in long-lived workers and reduce repeated bootstrap overhead, while retaining Laravel's domain model and request lifecycle.
 
@@ -471,7 +376,7 @@ The runtime foundation is introduced early, before Commerce and Payments become 
 | Local environment  | Docker Compose production-like runtime.                                                         |
 | Performance proof  | Load testing, profiling and SLO/capacity measurements; no unverified marketing claims.          |
 
-## 28. Docker & Local Development Runtime — NEW
+## 27. Docker & Local Development Runtime — NEW
 
 Docker Compose is the canonical local integration environment for the VYRA runtime. The objective is reproducibility: developers should be able to run the same classes of services locally that exist in staging/production.
 
@@ -493,7 +398,7 @@ docker compose
 * optional until SSR is deliberately activated.
 ```
 
-## 29. Octane-Safe Engineering Standard — NEW
+## 28. Octane-Safe Engineering Standard — NEW
 
 Long-lived workers change the risk profile of application code. VYRA must not store request-specific user, authorization, tenant, payment or business state in static properties, globals or unsafe singletons.
 
@@ -507,7 +412,7 @@ Worker recycling is a safety mechanism, not a substitute for correct state manag
 
 Testing must include repeated-request scenarios for sensitive flows and, where practical, Octane runtime tests.
 
-## 30. Queues, Background Work & Failure Isolation — NEW
+## 29. Queues, Background Work & Failure Isolation — NEW
 
 HTTP requests should perform only the work required to establish a durable result or immediate user response.
 
@@ -519,7 +424,7 @@ A slow third-party dependency must not unnecessarily consume application workers
 
 Financial state changes must remain transactionally correct even when downstream notifications or analytics are delayed.
 
-## 31. Realtime Runtime & Reverb Scaling — NEW
+## 30. Realtime Runtime & Reverb Scaling — NEW
 
 Reverb runs as a separate long-lived realtime service/process. It is not embedded into FrankenPHP/Octane request workers.
 
@@ -529,7 +434,7 @@ Presence, typing indicators, live counters and transient realtime state may use 
 
 When VYRA scales horizontally, Reverb nodes and Octane application nodes can scale independently according to their workload.
 
-## 32. SSR Runtime Boundary — NEW
+## 31. SSR Runtime Boundary — NEW
 
 Inertia SSR, when enabled, is treated as a separate long-running process rather than part of the Laravel HTTP worker itself.
 
@@ -539,7 +444,7 @@ SSR must not become a second backend. It consumes the same application-provided 
 
 SSR is introduced when page requirements justify it, with process supervision, health checks and resource limits.
 
-## 33. Performance, Observability & Capacity
+## 32. Performance, Observability & Capacity
 
 Performance work is evidence-driven. Establish baseline measurements before and after Octane/Redis/Reverb adoption.
 
@@ -551,7 +456,7 @@ Use tracing/correlation IDs across HTTP requests, queued jobs, payment webhooks,
 
 Load tests must represent realistic concurrency and payload sizes; do not infer production capacity from local RAM estimates or generic benchmark claims.
 
-## 34. MVP Definition & Updated Roadmap
+## 33. MVP Definition & Updated Roadmap
 
 MVP must-have: authentication; creator profiles; KYC workflow; products; memberships; one-time digital sales; payment integration; ledger; entitlements; media delivery; payouts; basic moderation; admin console; basic analytics.
 
@@ -562,7 +467,7 @@ Defer: full social discovery, advanced live, sophisticated AI, creator marketpla
 | Phase 0 — Foundation                              | COMPLETED. Application foundation, architecture, security standards, PostgreSQL, auth, design system, domain structure, CI and deployment foundation. |
 | Phase 1 — Creator Identity & Ownership            | COMPLETED. Creator ownership, canonical handles, policy boundaries, owner CRUD and tests.                                                             |
 | Phase 2 — Creator Profile Foundation              | COMPLETED. Public/private profile visibility, social links, public profile route and security boundaries.                                             |
-| Phase 3 — Runtime & Performance Foundation        | COMPLETED (minimum foundation). Docker, Octane + FrankenPHP, database queue worker, PostgreSQL CI, readiness checks, lifecycle verification and Octane-safe standards. Reverb/Redis-backed queue transport/advanced observability remain deliberately deferred. |
+| Phase 3 — Runtime & Performance Foundation        | NEXT. Docker, Octane + FrankenPHP, Redis, queues, Reverb, runtime health/observability and Octane-safe standards.                                     |
 | Phase 4 — Commerce Foundation                     | Products, prices, variants, availability, orders and reusable commerce primitives.                                                                    |
 | Phase 5 — Entitlements & Content Access           | Entitlement engine, access rules, private media delivery and content primitives.                                                                      |
 | Phase 6 — Payments & Checkout                     | Payment intents, provider integration, verified webhooks, checkout and payment state machines.                                                        |
@@ -573,66 +478,42 @@ Defer: full social discovery, advanced live, sophisticated AI, creator marketpla
 | Phase 11 — Intelligence                           | AI copilot, churn prediction, recommendations and advanced fraud/risk tooling.                                                                        |
 | Phase 12 — Global & Scale                         | Multi-currency, multi-language, regional payments/tax/compliance and infrastructure expansion.                                                        |
 
-## 36. Compliance Gates by Phase
-
-Compliance is a cross-cutting release gate. It does not mean every future compliance feature is built now.
-
-- **Phase 4 — Commerce:** establish product/order data needed for receipts, pricing disclosures, refund policy references, creator/business identity references and auditability.
-- **Phase 5 — Entitlements & Content:** enforce private-access authorization, content reporting hooks and age/restricted-content policy boundaries where applicable.
-- **Phase 6 — Payments:** verify payment-provider contract, webhook evidence, refund/dispute state, payment-data minimization, tax data requirements and applicable payment/compliance obligations before launch of payment flows.
-- **Phase 7 — Ledger/Payouts:** establish creator verification, payout holds/release rules, reconciliation evidence, financial records and applicable reporting/tax controls.
-- **Phase 8 — Memberships:** validate subscription disclosures, renewal/cancellation/refund behavior and jurisdiction-specific consumer requirements before enabling affected markets.
-- **Phase 9 — Relationship:** implement messaging safety, complaint/grievance, blocking/reporting, privacy and retention controls appropriate to the product and market.
-- **Phase 10 — Experiences:** validate age/eligibility, live-content moderation, event/ticket/refund controls and specialist-provider contracts before launch.
-- **Phase 11 — Intelligence:** add AI governance, model/provider data controls, audit/cost controls, human-review gates and applicable automated-decision safeguards.
-- **Phase 12 — Global & Scale:** perform jurisdiction-by-jurisdiction readiness reviews for privacy, tax, payments, consumer, content, age assurance, data transfer and operational obligations.
-
-A phase may be technically complete while its production launch remains blocked by unresolved legal/compliance review. The blueprint therefore distinguishes engineering completion from market-launch readiness.
-
-## 35. Correct Build Order — Updated
+## 34. Correct Build Order — Updated
 
 - Freeze product vocabulary and domain boundaries.
 - Maintain migration-ready PostgreSQL schema and authorization matrix.
-- Establish the production-like runtime early: Docker + Octane/FrankenPHP + queues, with Redis/Reverb introduced when their feature boundaries become active.
-- Validate Octane safety, health checks, worker lifecycle and runtime evidence.
-- Maintain a jurisdiction/compliance matrix and data-classification guardrails from the beginning; do not implement jurisdiction-specific controls without verified requirements.
+- Establish the production-like runtime early: Docker + Octane/FrankenPHP + Redis + queues + Reverb.
+- Validate Octane safety, health checks, worker lifecycle and observability.
 - Design payment state machine and double-entry ledger.
 - Design entitlement/access-control engine.
 - Design media pipeline and private delivery.
 - Build creator/fan/admin UX around those primitives.
-- Add observability, fraud, moderation, grievance handling and analytics as the corresponding domains mature.
-- Security, compliance and load-test critical paths before production launch.
-- Validate KYC, payments, payouts, tax, privacy, consumer, content-safety and age/minor controls before enabling the affected flows.
-- Expand into live, calls, AI and global features only after the core is reliable and each market/feature has passed its applicable readiness review.
+- Add observability, fraud, moderation and analytics.
+- Security test and load test critical paths.
+- Expand into live, calls, AI and global features only after the core is reliable.
 
-## 37. Phase 3 — Exact Codex Mission
+## 35. Phase 3 — Exact Codex Mission
 
-Phase 3 is the runtime foundation mission. The minimum completion scope has now been implemented in the existing VYRA repository without creating a nested application or changing established domain/business behavior.
+Phase 3 is the runtime foundation mission. It must be implemented in the existing VYRA repository without creating a nested application and without changing the established domain/business behavior.
 
-Completed runtime foundation:
+Codex must inspect current official Laravel 13, Octane, FrankenPHP, Reverb, Redis and Docker documentation before changing package/runtime configuration. Use current official package versions and commands rather than guessing.
 
-- Laravel Octane with FrankenPHP is configured as the application HTTP runtime.
-- Docker Compose is the canonical local integration runtime.
-- PostgreSQL is the transactional source of truth.
-- A dedicated database-backed queue worker is operational for background work.
-- PostgreSQL CI coverage is established alongside the existing test suite.
-- `/up` liveness and `/ready` database readiness checks are established.
-- Octane lifecycle/reload and app restart behavior have been verified.
-- Octane-safe engineering standards and repeated-request state-isolation tests are established.
+The mission is to establish a reproducible production-like local runtime and make the existing application safe under long-lived workers.
 
-Deliberately deferred from the minimum Phase 3 completion scope:
+- Add Laravel Octane and configure FrankenPHP.
+- Create a minimal Docker Compose environment for application, PostgreSQL, Redis, Reverb and queue worker.
+- Preserve PostgreSQL as transactional truth.
+- Configure Redis for cache/shared short-lived state and queue transport where appropriate.
+- Configure Laravel Reverb as a separate realtime process and establish Echo client readiness.
+- Establish queue worker conventions, retry/idempotency expectations and failure isolation.
+- Add health/readiness checks appropriate to the local/staging runtime.
+- Add Octane-safe engineering documentation and tests for cross-request state hazards.
+- Do not introduce microservices.
+- Do not implement payments, KYC, payouts, live streaming or production AI as part of this phase.
+- Do not route video through Laravel/Octane.
+- Do not weaken authentication, authorization or session behavior to accommodate the runtime.
 
-- Reverb/Echo activation and realtime production topology.
-- Redis-backed queue/cache/session migration.
-- Full production observability/APM.
-- Meaningful capacity/load testing before commerce/payment paths exist.
-- SSR activation.
-
-These deferred items must be implemented in the phase where their product/runtime dependency becomes real, or earlier if a verified operational requirement makes them necessary.
-
-Phase 3 must remain closed unless a new runtime regression or explicit architectural decision reopens it. Do not mix Commerce work into runtime cleanup.
-
-## 37. Master Codex Prompt — Runtime Phase
+## 36. Master Codex Prompt — Runtime Phase
 
 Use this as the Phase 3 implementation instruction after confirming the repository is clean and the VYRA Master Blueprint v3.0 is present.
 
@@ -691,7 +572,7 @@ FINAL REPORT:
 Report exact files changed, packages installed, runtime commands, Docker services, configuration assumptions, tests, build result, performance/observability additions, remaining gaps and the recommended Phase 4 Commerce plan.
 ```
 
-## 38. Launch Readiness Checklist
+## 37. Launch Readiness Checklist
 
 Security: threat model complete; secrets managed; authorization tests; dependency scanning; penetration test; incident response plan.
 
@@ -705,13 +586,13 @@ Performance: load test checkout, content access, messaging and creator dashboard
 
 Runtime: Octane worker lifecycle verified; memory behavior observed; Redis health monitored; Reverb capacity tested; queue retries/dead-letter handling defined; Docker/staging parity reviewed.
 
-## 40. Final Recommendation & Change Record
+## 38. Final Recommendation & Change Record
 
 LOCKED FINAL DECISION: VYRA will be built as a Laravel 13 + React 19 + TypeScript + Inertia 3 modular monolith, backed by PostgreSQL and Redis, with Laravel Octane + FrankenPHP for the HTTP runtime, Laravel Reverb for realtime, Laravel Queues for asynchronous work, and specialist infrastructure for WebRTC/live media.
 
 The product, financial, security, trust, analytics and operations requirements from the prior master blueprint remain in force unless explicitly changed here.
 
-This v3.1 update preserves the v3.0 runtime/performance architecture and formally adds the compliance-by-design guardrails described above: Octane, FrankenPHP, Docker, Redis, queues, Reverb, Octane-safe engineering, SSR process boundaries, observability and evidence-driven capacity planning.
+This v3.0 update formally incorporates the runtime/performance architecture that was previously discussed separately: Octane, FrankenPHP, Docker, Redis, queues, Reverb, Octane-safe engineering, SSR process boundaries, observability and evidence-driven capacity planning.
 
 Gemini-style benchmark/RAM/cost claims are intentionally not adopted as architectural guarantees. VYRA will validate capacity through its own load tests and production telemetry.
 
@@ -727,8 +608,3 @@ This document supersedes the previous v2.0 master as the active specification on
 - v2.0 → v3.0: SSR process boundary documented.
 - v2.0 → v3.0: roadmap aligned with actual completed phases and next implementation phase.
 - v2.0 → v3.0: unsupported fixed performance, RAM and cloud-cost claims excluded.
-- v3.0 → v3.1: compliance/regulatory guardrails added without prematurely implementing future compliance features.
-- v3.0 → v3.1: India-first and global expansion compliance planning requirements added.
-- v3.0 → v3.1: age/minor, privacy, KYC, payments, tax, payouts, consumer, content-safety and grievance readiness mapped across phases.
-- v3.0 → v3.1: Phase 3 reconciled with the actually completed minimum runtime foundation and deliberately deferred Reverb/advanced runtime work.
-- v3.0 → v3.1: architecture now distinguishes engineering completion from market-launch/compliance readiness.
