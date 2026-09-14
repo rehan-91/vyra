@@ -78,6 +78,24 @@ class RegistrationTest extends TestCase
         $this->assertDatabaseMissing('users', ['email' => 'underage@example.com']);
     }
 
+    public function test_users_with_a_future_date_of_birth_cannot_register(): void
+    {
+        $response = $this->from(route('register'))->post(route('register.store'), [
+            'name' => 'Future Date User',
+            'email' => 'future-date@example.com',
+            'date_of_birth' => today()->addDay()->toDateString(),
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('date_of_birth');
+
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['email' => 'future-date@example.com']);
+    }
+
     public function test_date_of_birth_is_required_to_register(): void
     {
         $response = $this->from(route('register'))->post(route('register.store'), [
